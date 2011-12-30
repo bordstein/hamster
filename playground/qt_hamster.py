@@ -72,9 +72,13 @@ class MyForm(QtGui.QMainWindow):
         countries = movie.get('countries', [""])
         runtime = movie.get('runtimes', [""])[0]
         # handle stuff like "USA:107" in runtime array
-        if ":" in runtime:
-            runtime = runtime.split(":")[1]
-        runtime = humanize_mins(runtime)
+        try:
+            if ":" in runtime:
+                runtime = runtime.split(":")[1]
+            runtime = humanize_mins(runtime)
+        except:
+            runtime = movie.get('runtimes', [""])[0] # reload
+            print "could not humanize", runtime, "for", id
         imdb_rating = str(movie.get('rating', "-"))
         votes = movie.get('votes', "-")
         rating = RICHTEXT_RATING % (imdb_rating, votes)
