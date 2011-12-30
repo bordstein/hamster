@@ -3,7 +3,6 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from qtgui import Ui_MainWindow
-from qtcustomia import MyTableModel
 from resultviewmodel import ResultViewModel
 from moviedb import MovieDB
 from util import humanize_mins
@@ -71,7 +70,11 @@ class MyForm(QtGui.QMainWindow):
         genres = movie.get('genres', [""])
         cast = movie.get('cast', [""])
         countries = movie.get('countries', [""])
-        runtime = humanize_mins(movie.get('runtimes', [""])[0])
+        runtime = movie.get('runtimes', [""])[0]
+        # handle stuff like "USA:107" in runtime array
+        if ":" in runtime:
+            runtime = runtime.split(":")[1]
+        runtime = humanize_mins(runtime)
         imdb_rating = str(movie.get('rating', "-"))
         votes = movie.get('votes', "-")
         rating = RICHTEXT_RATING % (imdb_rating, votes)
