@@ -13,6 +13,14 @@ class MovieDB(object):
         result = vr.rows[0]
         return (result.id, result.key)
 
+    def get_movie_titles(self, startkey=None):
+        if startkey:
+            rv = self.db.view("_design/test/_view/title",
+                    startkey=startkey, endkey=startkey + "\u9999")
+        else:
+            rv = self.db.view("_design/test/_view/title")
+        return rv
+
     def get_total_movies(self):
         vr = self.db.view("_design/mv/_view/count")
         return vr.rows[0].value
