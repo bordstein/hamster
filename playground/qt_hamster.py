@@ -10,10 +10,13 @@ from util import humanize_mins
 import urllib
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px;
 margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style="
 font-size:36pt; font-weight:600;">%s</span></p>
-<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"> <span style=" font-size:18pt;">rating</span></p>"""
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">votes</p>"""
 
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -69,7 +72,9 @@ class MyForm(QtGui.QMainWindow):
         cast = movie.get('cast', [""])
         countries = movie.get('countries', [""])
         runtime = humanize_mins(movie.get('runtimes', [""])[0])
-        rating = RICHTEXT_RATING % str(movie.get('rating', "-"))
+        imdb_rating = str(movie.get('rating', "-"))
+        votes = movie.get('votes', "-")
+        rating = RICHTEXT_RATING % (imdb_rating, votes)
         director = movie.get('director', ["-"])[0]["name"]
         title = movie['long imdb title']
         title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
