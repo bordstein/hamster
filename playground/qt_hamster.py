@@ -5,6 +5,7 @@ from PyQt4 import QtCore, QtGui
 from qtgui import Ui_MainWindow
 from qtcustomia import MyTableModel
 from moviedb import MovieDB
+import urllib
 
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -51,6 +52,14 @@ class MyForm(QtGui.QMainWindow):
         self.ui.l_plot.setText(plot)
         self.ui.l_plot_short.setText(plot_short)
         self.ui.l_rating.setText(rating)
+        #url = movie.get('full-size cover url', None)
+        url = movie.get('cover url', None)
+        if url:
+            filename, msg = urllib.urlretrieve(url)
+            img = QtGui.QImage(filename)
+            self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
+        else:
+            self.ui.l_img.setText("-")
         self.ui.l_genres.setText(", ".join(genres))
 
 if __name__ == "__main__":
