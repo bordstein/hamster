@@ -80,9 +80,12 @@ class MyForm(QtGui.QMainWindow):
         self.ui.l_director.setText(director)
         self.ui.l_runtime.setText(runtime)
         self.ui.l_genres.setText(", ".join(genres))
+        self.ui.l_genres.setCursorPosition(0)
         self.ui.l_countries.setText(", ".join(countries))
+        self.ui.l_countries.setCursorPosition(0)
         cast = [c['name'] for c in cast]
         self.ui.l_cast.setText(", ".join(cast[:4]))
+        self.ui.l_cast.setCursorPosition(0)
         #url = movie.get('full-size cover url', None)
         url = movie.get('cover url', None)
         if url:
