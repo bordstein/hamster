@@ -7,6 +7,14 @@ from qtcustomia import MyTableModel
 from moviedb import MovieDB
 import urllib
 
+RICHTEXT_BIG = """
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+<html><head><meta name="qrichtext" content="1" /><style type="text/css">
+p, li { white-space: pre-wrap; }
+</style></head><body style=" font-family:'Ubuntu'; font-size:14pt; font-weight:400; font-style:normal;">
+<p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;
+-qt-block-indent:0; text-indent:0px;"><span style=" font-size:16pt; font-weight:600;">%s</span></p></body></html>"""
+
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -48,10 +56,14 @@ class MyForm(QtGui.QMainWindow):
         plot = movie.get('plot', [""])[0]
         genres = movie.get('genres', [""])
         rating = str(movie.get('rating', "-"))
-        self.ui.l_title.setText(movie['title'])
+        director = movie.get('director', ["-"])[0]["name"]
+        title = movie['long imdb title']
+        self.ui.l_title.setText(RICHTEXT_BIG % title)
         self.ui.l_plot.setText(plot)
         self.ui.l_plot_short.setText(plot_short)
         self.ui.l_rating.setText(rating)
+        self.ui.l_director.setText(director)
+        self.ui.l_genres.setText(", ".join(genres))
         #url = movie.get('full-size cover url', None)
         url = movie.get('cover url', None)
         if url:
@@ -60,7 +72,6 @@ class MyForm(QtGui.QMainWindow):
             self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
         else:
             self.ui.l_img.setText("-")
-        self.ui.l_genres.setText(", ".join(genres))
 
 if __name__ == "__main__":
   app = QtGui.QApplication(sys.argv)
