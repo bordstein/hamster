@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>879</width>
-    <height>555</height>
+    <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -123,7 +123,7 @@ p, li { white-space: pre-wrap; }
           <item>
            <widget class="QCheckBox" name="checkBox">
             <property name="text">
-             <string>Already seen</string>
+             <string>Already watched</string>
             </property>
            </widget>
           </item>
