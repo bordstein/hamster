@@ -6,7 +6,14 @@ from qtgui import Ui_MainWindow
 from qtcustomia import MyTableModel
 from resultviewmodel import ResultViewModel
 from moviedb import MovieDB
+from util import humanize_mins
 import urllib
+
+RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style="
+font-size:36pt; font-weight:600;">%s</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"> <span style=" font-size:18pt;">rating</span></p>"""
 
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -59,15 +66,23 @@ class MyForm(QtGui.QMainWindow):
         plot_short = movie.get('plot outline', "")
         plot = movie.get('plot', [""])[0]
         genres = movie.get('genres', [""])
-        rating = str(movie.get('rating', "-"))
+        cast = movie.get('cast', [""])
+        countries = movie.get('countries', [""])
+        runtime = humanize_mins(movie.get('runtimes', [""])[0])
+        rating = RICHTEXT_RATING % str(movie.get('rating', "-"))
         director = movie.get('director', ["-"])[0]["name"]
         title = movie['long imdb title']
+        title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
         self.ui.l_title.setText(title)
         self.ui.l_plot.setText(plot)
         self.ui.l_plot_short.setText(plot_short)
         self.ui.l_rating.setText(rating)
         self.ui.l_director.setText(director)
+        self.ui.l_runtime.setText(runtime)
         self.ui.l_genres.setText(", ".join(genres))
+        self.ui.l_countries.setText(", ".join(countries))
+        cast = [c['name'] for c in cast]
+        self.ui.l_cast.setText(", ".join(cast[:4]))
         #url = movie.get('full-size cover url', None)
         url = movie.get('cover url', None)
         if url:

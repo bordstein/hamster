@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>792</width>
-    <height>494</height>
+    <width>879</width>
+    <height>501</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -25,7 +25,7 @@
         <string>Overview</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="0" colspan="3">
+        <item row="0" column="0" colspan="4">
          <widget class="QLabel" name="l_title">
           <property name="text">
            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -39,24 +39,11 @@ p, li { white-space: pre-wrap; }
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Imdb rating:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0" colspan="4">
+        <item row="8" column="0" colspan="4">
          <widget class="QTextBrowser" name="l_plot_short"/>
         </item>
-        <item row="1" column="0" rowspan="5">
+        <item row="1" column="0" rowspan="7">
          <widget class="QLabel" name="l_img">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -70,72 +57,114 @@ p, li { white-space: pre-wrap; }
            <string>image</string>
           </property>
           <property name="scaledContents">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="margin">
            <number>4</number>
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QLabel" name="l_rating">
-          <property name="text">
-           <string>-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="l_genres">
-          <property name="text">
-           <string>-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Director:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="2">
-         <widget class="QLabel" name="l_director">
-          <property name="text">
-           <string>-</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1">
+        <item row="6" column="1">
          <widget class="QLabel" name="label_3">
           <property name="text">
            <string>Cast:</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="3" rowspan="5">
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
+        <item row="6" column="2" colspan="2">
+         <widget class="QLineEdit" name="l_cast"/>
         </item>
-        <item row="4" column="2">
-         <widget class="QLabel" name="l_cast">
+        <item row="9" column="3">
+         <widget class="QPushButton" name="pushButton">
           <property name="text">
-           <string>-</string>
+           <string>/\</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="9" column="2" rowspan="2">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:14pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;right&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:600;&quot;&gt;+4&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item row="10" column="3">
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="text">
+           <string>\/</string>
+          </property>
+         </widget>
+        </item>
+        <item row="9" column="0" rowspan="2" colspan="2">
+         <widget class="QCheckBox" name="checkBox">
+          <property name="text">
+           <string>Already seen</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>Genres:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="2" colspan="2">
+         <widget class="QLineEdit" name="l_genres"/>
+        </item>
+        <item row="2" column="2">
+         <widget class="QLineEdit" name="l_director"/>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Director:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <widget class="QLineEdit" name="l_countries"/>
+        </item>
+        <item row="4" column="1">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Countries:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3" rowspan="4">
+         <widget class="QLabel" name="l_rating">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="text">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:14pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:18pt;&quot;&gt;imdb&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:36pt; font-weight:600;&quot;&gt;-&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt; &lt;span style=&quot; font-size:18pt;&quot;&gt;rating&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="margin">
+           <number>3</number>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QLineEdit" name="l_runtime"/>
+        </item>
+        <item row="3" column="1">
+         <widget class="QLabel" name="label_7">
+          <property name="text">
+           <string>Length:</string>
           </property>
          </widget>
         </item>
@@ -160,7 +189,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>792</width>
+     <width>879</width>
      <height>30</height>
     </rect>
    </property>
@@ -175,6 +204,9 @@ p, li { white-space: pre-wrap; }
      <item>
       <widget class="QLineEdit" name="search_bar">
        <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
         <string>Search...</string>
        </property>
       </widget>
@@ -190,6 +222,19 @@ p, li { white-space: pre-wrap; }
    </widget>
   </widget>
  </widget>
+ <tabstops>
+  <tabstop>search_bar</tabstop>
+  <tabstop>tableView</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>l_plot_short</tabstop>
+  <tabstop>l_plot</tabstop>
+  <tabstop>l_cast</tabstop>
+  <tabstop>l_countries</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>pushButton</tabstop>
+  <tabstop>pushButton_2</tabstop>
+  <tabstop>l_runtime</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
