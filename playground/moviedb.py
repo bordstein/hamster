@@ -16,7 +16,7 @@ class MovieDB(object):
     def get_movie_titles(self, startkey=None):
         if startkey:
             rv = self.db.view("_design/test/_view/title",
-                    startkey=startkey, endkey=startkey + "\u9999")
+                    startkey=startkey)#, endkey=startkey + "\u9999")
         else:
             rv = self.db.view("_design/test/_view/title")
         return rv

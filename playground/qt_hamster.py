@@ -35,13 +35,21 @@ class MyForm(QtGui.QMainWindow):
         # set horizontal header properties
         hh = tv.horizontalHeader()
         hh.setStretchLastSection(True)
-        print tv.selectionModel()
         #print self.connect(tv,
         #    QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),
         #    self.update_selection)
         print self.connect(tv,
             QtCore.SIGNAL("clicked(QModelIndex)"),
             self.setCurrentSelection)
+        print self.connect(self.ui.search_bar,
+            QtCore.SIGNAL("textChanged(QString)"),
+            self.update_model)
+
+    def update_model(self, new_text):
+        #search_string = str(self.ui.search_bar.text())
+        search_string = str(new_text)
+        titles = self.db.get_movie_titles(search_string)
+        self.model.setResultView(titles)
 
     def setCurrentSelection(self, item):
         print "clicked", item.row()

@@ -173,7 +173,7 @@ p, li { white-space: pre-wrap; }
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="search_bar">
        <property name="text">
         <string>Search...</string>
        </property>
