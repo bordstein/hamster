@@ -6,9 +6,9 @@ from qtgui import Ui_MainWindow
 import u1db
 import json
 from whooshresmodel import ResultViewModel
-from whoosh_action.index import HamsterIndex
-from util import humanize_mins
-from qt_indexer import IndexThread
+from indexer.hamsterindex import HamsterIndex
+from util.strings import humanize_mins
+from indexer.qindexer import IndexThread
 import urllib
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>

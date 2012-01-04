@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
 #from gevent import monkey; monkey.patch_socket()
-from dbcloner import normalize
+from util.dbcloner import normalize
 
 import u1db
 import sys
 import re
 import imdb
 import json
-from whoosh_action.index import HamsterIndex
+from indexer.hamsterindex import HamsterIndex
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread
 from PySide.QtGui import QApplication
 import signal
