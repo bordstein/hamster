@@ -9,7 +9,7 @@ from whooshresmodel import ResultViewModel
 from indexer.hamsterindex import HamsterIndex
 from util.strings import humanize_mins
 from indexer.qindexer import IndexThread
-import urllib
+from util.downloader import DownloadManager
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -25,6 +25,8 @@ class MyForm(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.downloader = DownloadManager()
+        self.downloader.dl_finished.connect(self.update_cover)
         header = ['Movie']
 
         #self.db = MovieDB("movies")
@@ -68,6 +70,11 @@ class MyForm(QtGui.QMainWindow):
         print self.t.finished.connect(self.sync_finished)
         self.t.start()
         print "started"
+
+    def update_cover(self, url, filename):
+        if self.current_url == url:
+            img = QtGui.QImage(filename)
+            self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
 
     def sync_finished(self):
         print "\nsync finished"
@@ -123,12 +130,11 @@ class MyForm(QtGui.QMainWindow):
         self.ui.l_cast.setCursorPosition(0)
         #url = movie.get('full-size cover url', None)
         url = movie.get('cover url', None)
+        self.ui.l_img.setText("-")
+        self.current_url = url
         if url:
-            filename, msg = urllib.urlretrieve(url)
-            img = QtGui.QImage(filename)
-            self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
-        else:
-            self.ui.l_img.setText("-")
+            #filename, msg = urllib.urlretrieve(url)
+            self.downloader.do_download(url)
 
 if __name__ == "__main__":
   app = QtGui.QApplication(sys.argv)
