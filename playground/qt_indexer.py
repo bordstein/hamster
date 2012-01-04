@@ -42,8 +42,8 @@ class Job(QRunnable):
 class Printer(QObject):
     def __init__(self):
         QObject.__init__(self)
-        self.index = HamsterIndex("/tmp/hamster.idx")
-        self.db = u1db.open("/tmp/out.db", create=True)
+        self.index = HamsterIndex("/media/DATA/hamster/hamster.idx")
+        self.db = u1db.open("/media/DATA/hamster/hamster.db", create=True)
     def slotPrint(self, movie):
         self.index.index_movie(movie)
         self.db.create_doc(json.dumps(movie), doc_id=movie["_id"])
@@ -60,7 +60,6 @@ class IndexThread (QThread):
         print "running"
         rex = re.compile(".*\[(\d{7})\]$")
         imdb_db = imdb.IMDb()
-        index = HamsterIndex("/tmp/hamster.idx")
         tp = QThreadPool.globalInstance()
         printer = Printer()
         count = 0

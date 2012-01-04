@@ -7,7 +7,6 @@ import u1db
 import json
 from whooshresmodel import ResultViewModel
 from whoosh_action.index import HamsterIndex
-#from moviedb import MovieDB
 from util import humanize_mins
 from qt_indexer import IndexThread
 import urllib
