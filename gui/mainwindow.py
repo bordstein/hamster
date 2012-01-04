@@ -73,11 +73,10 @@ class MyForm(QtGui.QMainWindow):
         print "\nsync finished"
 
     def update_model(self, new_text):
-        #search_string = str(self.ui.search_bar.text())
         search_string = str(new_text)
-        #TODO filter bar
+        titles = self.index.query("'%s'" % new_text)
         #titles = self.db.get_movie_titles(search_string)
-        #self.model.setResultView(titles)
+        self.model.setResults(titles)
 
     def setCurrentSelection(self, newSelection, oldSelection):
         indexes = newSelection.at(0).indexes()
