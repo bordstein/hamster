@@ -1,10 +1,13 @@
 #!/usr/bin/python -d
 
 import sys
-from PySide import QtCore, QtGui
+from PySide import QtGui
 from qtgui import Ui_MainWindow
-from resultviewmodel import ResultViewModel
-from moviedb import MovieDB
+import u1db
+import json
+from whooshresmodel import ResultViewModel
+from whoosh_action.index import HamsterIndex
+#from moviedb import MovieDB
 from util import humanize_mins
 from qt_indexer import IndexThread
 import urllib
@@ -25,12 +28,15 @@ class MyForm(QtGui.QMainWindow):
         self.ui.setupUi(self)
         header = ['Movie']
 
-        self.db = MovieDB("movies")
+        #self.db = MovieDB("movies")
         tv = self.ui.tableView
         tv.setShowGrid(False)
         #model = MyTableModel(self.db, header, tv)
-        titles = self.db.get_movie_titles()
-        self.model = ResultViewModel(titles, header, tv)
+        #titles = self.db.get_movie_titles()
+        self.index = HamsterIndex("/media/DATA/hamster/hamster.idx")
+        self.db = u1db.open("/media/DATA/hamster/hamster.db", create=True)
+        results = self.index.list_all()
+        self.model = ResultViewModel(results, header, tv)
         #model = QtGui.QStandardItemModel()
         #model.insertRow(0, [QtGui.QStandardItem("hallo")])
         #model.insertRow(0, [QtGui.QStandardItem("sadf")])
@@ -70,8 +76,9 @@ class MyForm(QtGui.QMainWindow):
     def update_model(self, new_text):
         #search_string = str(self.ui.search_bar.text())
         search_string = str(new_text)
-        titles = self.db.get_movie_titles(search_string)
-        self.model.setResultView(titles)
+        #TODO filter bar
+        #titles = self.db.get_movie_titles(search_string)
+        #self.model.setResultView(titles)
 
     def setCurrentSelection(self, newSelection, oldSelection):
         indexes = newSelection.at(0).indexes()
@@ -79,7 +86,8 @@ class MyForm(QtGui.QMainWindow):
             return
         item = indexes[0]
         id = self.model.getIdForRow(item.row())
-        movie = self.db.get_movie(id)
+        movie_doc = self.db.get_doc(id)
+        movie = json.loads(movie_doc.content)
         plot_short = movie.get('plot outline', "")
         plot = movie.get('plot', [""])[0]
         genres = movie.get('genres', [""])
