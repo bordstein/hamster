@@ -1,11 +1,12 @@
 #!/usr/bin/python -d
 
 import sys
-from PyQt4 import QtCore, QtGui
+from PySide import QtCore, QtGui
 from qtgui import Ui_MainWindow
 from resultviewmodel import ResultViewModel
 from moviedb import MovieDB
 from util import humanize_mins
+from qt_indexer import IndexThread
 import urllib
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
@@ -19,7 +20,7 @@ margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
 
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         header = ['Movie']
@@ -37,6 +38,7 @@ class MyForm(QtGui.QMainWindow):
         #model.insertRow(0, [QtGui.QStandardItem("warum?")])
         #model.insertRow(0, [QtGui.QStandardItem("haeff")])
         tv.setModel(self.model)
+        selectionModel = tv.selectionModel()
         # hide vertical header
         vh = tv.verticalHeader()
         vh.setVisible(False)
@@ -47,12 +49,23 @@ class MyForm(QtGui.QMainWindow):
         #print self.connect(tv,
         #    QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),
         #    self.update_selection)
-        print self.connect(tv,
-            QtCore.SIGNAL("clicked(QModelIndex)"),
-            self.setCurrentSelection)
-        print self.connect(self.ui.search_bar,
-            QtCore.SIGNAL("textChanged(QString)"),
-            self.update_model)
+        #print self.connect(tv,
+        #    QtCore.SIGNAL("clicked(QModelIndex)"),
+        #    self.setCurrentSelection)
+        #tv.clicked.connect(self.setCurrentSelection)
+        selectionModel.selectionChanged.connect(self.setCurrentSelection)
+        self.ui.search_bar.textChanged.connect(self.update_model)
+        self.ui.action_sync_now.triggered.connect(self.sync)
+
+    def sync(self):
+        #self.t = IndexThread("/media/DATA/media/movies/")
+        self.t = IndexThread("/tmp/mv/")
+        print self.t.finished.connect(self.sync_finished)
+        self.t.start()
+        print "started"
+
+    def sync_finished(self):
+        print "\nsync finished"
 
     def update_model(self, new_text):
         #search_string = str(self.ui.search_bar.text())
@@ -60,9 +73,11 @@ class MyForm(QtGui.QMainWindow):
         titles = self.db.get_movie_titles(search_string)
         self.model.setResultView(titles)
 
-    def setCurrentSelection(self, item):
-        print "clicked", item.row()
-        #id, title = self.db.get_movie_id_title_for_position(item.row())
+    def setCurrentSelection(self, newSelection, oldSelection):
+        indexes = newSelection.at(0).indexes()
+        if not len(indexes) == 1:
+            return
+        item = indexes[0]
         id = self.model.getIdForRow(item.row())
         movie = self.db.get_movie(id)
         plot_short = movie.get('plot outline', "")
