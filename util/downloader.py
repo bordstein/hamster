@@ -4,7 +4,7 @@ from PySide.QtCore import QFile, QFileInfo, QTimer, QUrl, QObject, QIODevice, QC
 from PySide.QtNetwork import QNetworkRequest, QNetworkAccessManager
 
 class DownloadManager(QObject):
-    dl_finished = Signal(str)
+    dl_finished = Signal(str, str)
 
     def __init__(self):
         QObject.__init__(self)
@@ -14,7 +14,7 @@ class DownloadManager(QObject):
         self.manager.finished.connect(self.download_finished)
 
     def do_download(self, dl_url):
-        url = QUrl.fromEncoded(dl_url)
+        url = QUrl(dl_url)
         req = QNetworkRequest(url)
         reply = self.manager.get(req)
         self.current_downloads[reply] = dl_url
@@ -64,10 +64,10 @@ class DownloadManager(QObject):
                     url.toEncoded(), filename)
             url = self.current_downloads.pop(reply)
             reply.deleteLater()
-            self.dl_finished.emit(url)
+            self.dl_finished.emit(url, filename)
 
-    def lastlog(self, url):
-        print url, "ok"
+    def lastlog(self, url, filename):
+        print url, "to", filename, "ok"
         if len(self.current_downloads) == 0:
             print "bye"
             QCoreApplication.instance().quit()
