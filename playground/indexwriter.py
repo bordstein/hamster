@@ -5,8 +5,9 @@ import json
 
 def index(movie):
     try:
+        db = u1db.open("/tmp/out.db", create=True)
         h_index.index_movie(movie)
-        #db.create_doc(json.dumps(movie), doc_id=movie["_id"])
+        db.create_doc(json.dumps(movie), doc_id=movie["_id"])
         print "indexed and stored:", movie['title']
     except Exception as e:
         print "failed"
@@ -18,7 +19,6 @@ class QueueManager(BaseManager):
 if __name__ == "__main__":
 
     h_index = HamsterIndex("/tmp/hamster.idx")
-    #db = u1db.open("/tmp/out.db", create=True)
 
     QueueManager.register('index', callable=index)
     m = QueueManager(address=('', 50000), authkey='abracadabra')
