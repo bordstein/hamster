@@ -9,7 +9,7 @@ import re
 import imdb
 import json
 from whoosh_action.index import HamsterIndex
-from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal
+from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread
 from PySide.QtGui import QApplication
 import signal
 
@@ -21,23 +21,19 @@ class WorkerObject(QObject):
     finsig = Signal()
 
 class Job(QRunnable): 
-    def __init__(self, imdb_id): 
+    def __init__(self, imdb_db, imdb_id): 
         QRunnable.__init__(self) 
         self.imdb_id = imdb_id 
+        self.imdb_db = imdb_db
         self.obj = WorkerObject()
 
     def run(self): 
         print "fetching", self.imdb_id, "..."
-        movie = imdb_db.get_movie(self.imdb_id)
+        movie = self.imdb_db.get_movie(self.imdb_id)
         nm = normalize(movie)
-        #db.create_doc(json.dumps(nm), doc_id=imdb_id)
         nm['_id'] = str(self.imdb_id)
-        #db.save(nm)
-        #index.index_movie(nm)
-        #movie_json = json.dumps(nm)
+
         self.obj.finished.emit(nm)
-        #self.obj.finsig.emit()
-        #m.index(nm)
 
     def autoDelete(self):
         return True
@@ -55,36 +51,45 @@ class Printer(QObject):
     def printFin(self):
         print "finished!"
 
-def cb_dir(directory):
-    match = rex.match(directory)
-    if match:
-        imdb_id = match.group(1)
-        j = Job(imdb_id) 
-        j.obj.finished.connect(printer.slotPrint)
-        #j.obj.finsig.connect(printer.printFin)
-        tp.start(j) 
+class IndexThread (QThread):
+    def __init__ (self, media_path, parent = None):
+        QThread.__init__(self, parent)
+        self.media_path = media_path
 
-rex = re.compile(".*\[(\d{7})\]$")
-imdb_db = imdb.IMDb()
-index = HamsterIndex("/tmp/hamster.idx")
+    def run(self):
+        print "running"
+        rex = re.compile(".*\[(\d{7})\]$")
+        imdb_db = imdb.IMDb()
+        index = HamsterIndex("/tmp/hamster.idx")
+        tp = QThreadPool.globalInstance()
+        printer = Printer()
+        count = 0
 
-app = QApplication(sys.argv) 
+        it = QDirIterator(self.media_path, QDirIterator.Subdirectories)
+        while it.hasNext():
+            dir = it.next()
+            try:
+                directory = unicode(dir)
+                match = rex.match(directory)
+                if match:
+                    count += 1
+                    imdb_id = match.group(1)
+                    j = Job(imdb_db, imdb_id) 
+                    j.obj.finished.connect(printer.slotPrint)
+                    tp.start(j) 
+            except:
+                pass
+        print count
+        self.exec_()
 
-tp = QThreadPool.globalInstance()
-tp.setMaxThreadCount(6) 
+if __name__ == "__main__":
+    app = QApplication(sys.argv) 
+    tp = QThreadPool.globalInstance()
+    tp.setMaxThreadCount(8) 
 
-printer = Printer()
+    t = IndexThread("/media/DATA/media/movies/")
+    t.finished.connect(app.quit)
+    print "started"
+    t.start()
+    sys.exit(app.exec_())
 
-media_path = "/media/DATA/media/movies/"
-it = QDirIterator(media_path, QDirIterator.Subdirectories)
-while it.hasNext():
-    dir = it.next()
-    try:
-        dir = unicode(dir)
-        cb_dir(dir)
-    except:
-        pass
-
-#os.path.walk("/media/DATA/media/movies/", counter, "secret message")
-#print count
-sys.exit(app.exec_())
