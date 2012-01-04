@@ -468,6 +468,13 @@ p, li { white-space: pre-wrap; }
      <height>30</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuSync">
+    <property name="title">
+     <string>Sync</string>
+    </property>
+    <addaction name="action_sync_now"/>
+   </widget>
+   <addaction name="menuSync"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -611,6 +618,11 @@ p, li { white-space: pre-wrap; }
     </layout>
    </widget>
   </widget>
+  <action name="action_sync_now">
+   <property name="text">
+    <string>Sync now</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>
