@@ -88,8 +88,6 @@ if __name__ == "__main__":
     tp.setMaxThreadCount(8) 
 
     t = IndexThread("/media/DATA/media/movies/")
-    t.finished.connect(app.quit)
-    print "started"
     t.start()
     sys.exit(app.exec_())
 
