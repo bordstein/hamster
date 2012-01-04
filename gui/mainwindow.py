@@ -75,7 +75,7 @@ class MyForm(QtGui.QMainWindow):
     def update_model(self, new_text):
         search_string = str(new_text)
         if search_string:
-            titles = self.index.query("'%s'" % new_text)
+            titles = self.index.query(new_text)
         else:
             titles = self.index.list_all()
         self.model.setResults(titles)
