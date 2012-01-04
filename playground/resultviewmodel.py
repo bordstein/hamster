@@ -1,6 +1,6 @@
 import sys 
-from PyQt4.QtCore import * 
-from PyQt4.QtGui import * 
+from PySide.QtGui import QApplication, QWidget, QVBoxLayout, QTableView, QFont
+from PySide.QtCore import QAbstractTableModel, Qt
 import couchdb
  
 def main(): 
@@ -112,19 +112,19 @@ class ResultViewModel(QAbstractTableModel):
  
     def data(self, index, role): 
         if not index.isValid(): 
-            return QVariant() 
+            return None
         elif role != Qt.DisplayRole: 
-            return QVariant() 
+            return None
         #return QVariant(self.arraydata[index.row()][index.column()]) 
         if self.resultView:
             title = self.resultView.rows[index.row()].key
-            return QVariant(title)
-        return QVariant()
+            return title
+        return None
 
     def headerData(self, col, orientation, role):
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return QVariant(self.headerdata[col])
-        return QVariant()
+            return self.headerdata[col]
+        return None
 
 if __name__ == "__main__": 
     main()
