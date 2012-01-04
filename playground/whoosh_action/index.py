@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 from whoosh.qparser import QueryParser
 from whoosh.index import create_in, open_dir
@@ -31,6 +32,15 @@ class HamsterIndex(object):
                 )
         writer.commit()
 
+    def list_all(self):
+        num = 0
+        retval = []
+        with self.index.searcher() as searcher:
+            for res in searcher.reader().all_stored_fields():
+                num += 1
+                retval.append(res)
+        return retval
+
     def query(self, querystring):
         querystring = unicode(querystring)
         myquery = self.q_parser.parse(querystring)
@@ -44,8 +54,12 @@ class HamsterIndex(object):
 
 
 if __name__ == "__main__":
-    idx = HamsterIndex("/tmp/hamster.idx")
-    results = idx.query("cast:DiCaprio cast:Nicholson")
+    import sys
+    idx = HamsterIndex("/media/DATA/hamster/hamster.idx")
+    idx.list_all()
+    query = sys.argv[1]
+    print "query:", query
+    results = idx.query(query)
     print len(results)
     for res in results:
         print res
