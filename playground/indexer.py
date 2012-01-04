@@ -7,13 +7,15 @@ import os
 import re
 import imdb
 import json
-import u1db
+#import u1db
 import couchdb
 import gevent
 from gevent import pool
+from whoosh_action.index import HamsterIndex
 
 rex = re.compile(".*\[(\d{7})\]")
 imdb_db = imdb.IMDb()
+index = HamsterIndex("/tmp/hamster.idx")
 #db = u1db.open("/tmp/out.db", create=True)
 couch = couchdb.Server()
 db = couch['movies']
@@ -35,8 +37,9 @@ def fetch_and_normalize(imdb_id):
     movie = imdb_db.get_movie(imdb_id)
     nm = normalize(movie)
     #db.create_doc(json.dumps(nm), doc_id=imdb_id)
-    nm['_id'] = imdb_id
-    db.save(nm)
+    nm['_id'] = str(imdb_id)
+    #db.save(nm)
+    index.index_movie(nm)
     print "fetched!"
 
 def counter(arg, directory, files):
