@@ -14,4 +14,4 @@ class MovieSchema(SchemaClass):
     cast = TEXT
     director = TEXT
     genre = KEYWORD
-    rating = NUMERIC
+    rating = NUMERIC(type=float)
