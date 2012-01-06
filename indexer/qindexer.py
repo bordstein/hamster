@@ -9,7 +9,7 @@ import re
 import imdb
 import json
 from indexer.hamsterindex import HamsterIndex
-from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread
+from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt
 from PySide.QtGui import QApplication
 import signal
 
@@ -42,8 +42,8 @@ class Job(QRunnable):
 class Printer(QObject):
     def __init__(self):
         QObject.__init__(self)
-        self.index = HamsterIndex("/media/DATA/hamster/hamster.idx")
-        self.db = u1db.open("/media/DATA/hamster/hamster.db", create=True)
+        self.index = HamsterIndex("/tmp/hamster.idx")
+        self.db = u1db.open("/tmp/hamster.db", create=True)
     def slotPrint(self, movie):
         self.index.index_movie(movie)
         self.db.create_doc(json.dumps(movie), doc_id=movie["_id"])
@@ -74,19 +74,23 @@ class IndexThread (QThread):
                     count += 1
                     imdb_id = match.group(1)
                     j = Job(imdb_db, imdb_id) 
-                    j.obj.finished.connect(printer.slotPrint)
+                    j.obj.finished.connect(printer.slotPrint,
+                            Qt.QueuedConnection)
                     tp.start(j) 
             except:
                 pass
         print count
         self.exec_()
 
+def finished():
+    print '\n\nFINISHED!!!'
+
 if __name__ == "__main__":
     app = QApplication(sys.argv) 
     tp = QThreadPool.globalInstance()
     tp.setMaxThreadCount(8) 
 
-    t = IndexThread("/media/DATA/media/movies/")
+    t = IndexThread("/tmp/mv/")
     t.start()
     sys.exit(app.exec_())
 
