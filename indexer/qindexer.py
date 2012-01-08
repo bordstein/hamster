@@ -39,12 +39,12 @@ class Job(QRunnable):
         return True
         
 
-class Printer(QObject):
-    def __init__(self):
+class IndexWriter(QObject):
+    def __init__(self, path_hamster_idx, path_u1db):
         QObject.__init__(self)
-        self.index = HamsterIndex("/tmp/hamster.idx")
-        self.db = u1db.open("/tmp/hamster.db", create=True)
-    def slotPrint(self, movie):
+        self.index = HamsterIndex(path_hamster_idx)
+        self.db = u1db.open(path_u1db, create=True)
+    def index_movie(self, movie):
         self.index.index_movie(movie)
         self.db.create_doc(json.dumps(movie), doc_id=movie["_id"])
         print movie['title'], "finished"
@@ -61,7 +61,10 @@ class IndexThread (QThread):
         rex = re.compile(".*\[(\d{7})\]$")
         imdb_db = imdb.IMDb()
         tp = QThreadPool.globalInstance()
-        printer = Printer()
+        #printer = IndexWriter("/media/DATA/hamster/hamster.idx",
+        #        "/media/DATA/hamster/hamster.db")
+        writer = IndexWriter("/tmp/hamster.idx",
+                "/tmp/hamster.db")
         count = 0
 
         it = QDirIterator(self.media_path, QDirIterator.Subdirectories)
@@ -74,7 +77,7 @@ class IndexThread (QThread):
                     count += 1
                     imdb_id = match.group(1)
                     j = Job(imdb_db, imdb_id) 
-                    j.obj.finished.connect(printer.slotPrint,
+                    j.obj.finished.connect(writer.index_movie,
                             Qt.QueuedConnection)
                     tp.start(j) 
             except:
