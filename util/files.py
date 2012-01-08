@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import re
+import platform
 from subprocess import Popen
 rex = re.compile(r".*\.(avi|mkv|mov)")
 
@@ -20,11 +21,12 @@ def write_m3u(media_files, output_file):
             m3u_file.write(f + "\r\n")
 
 def os_open_file(full_file_path):
-    if sys.platform == 'linux2':
+    os_type = platform.system()
+    if os_type == 'Linux':
         cmd = 'xdg-open'
-    elif sys.platform == 'win32':
-        print "hmm, windows open file cmd?"
-    elif sys.platform == 'darwin':
+    elif os_type == 'Windows':
+        cmd = 'start'
+    elif os_type == 'Darwin':
         cmd = 'open'
     if cmd:
         print "opening %s with %s" % (full_file_path, cmd)
