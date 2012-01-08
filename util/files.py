@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import re
+from subprocess import Popen
 rex = re.compile(r".*\.(avi|mkv|mov)")
 
 def get_movie_files(directory):
@@ -13,6 +14,26 @@ def get_movie_files(directory):
             movie_files.append(full_mv_path)
     return movie_files
 
+def write_m3u(media_files, output_file):
+    with open(output_file, "a") as m3u_file:
+        for f in media_files:
+            m3u_file.write(f + "\r\n")
+
+def os_open_file(full_file_path):
+    if sys.platform == 'linux2':
+        cmd = 'xdg-open'
+    elif sys.platform == 'win32':
+        print "hmm, windows open file cmd?"
+    elif sys.platform == 'darwin':
+        cmd = 'open'
+    if cmd:
+        print "opening %s with %s" % (full_file_path, cmd)
+        Popen([cmd, full_file_path])
+        return
+    print "no suitible command to open file on system found"
+
 if __name__ == "__main__":
     import sys
-    print get_movie_files(sys.argv[1])
+    files = get_movie_files(sys.argv[1])
+    write_m3u(files, "/tmp/outfile.m3u")
+    os_open_file("/tmp/outfile.m3u")
