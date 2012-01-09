@@ -10,6 +10,7 @@ import json
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt
 from PySide.QtGui import QApplication
 from util.files import get_user_index, get_user_db
+import util.log as L
 import signal
 
 # allow aborting via ctrl + c
@@ -27,7 +28,7 @@ class Job(QRunnable):
         self.obj = WorkerObject()
 
     def run(self): 
-        print "fetching", self.imdb_id, "..."
+        L.d( "fetching %s ..." % self.imdb_id)
         movie = self.imdb_db.get_movie(self.imdb_id)
         nm = normalize(movie)
         nm['_id'] = str(self.imdb_id)
@@ -46,9 +47,7 @@ class IndexWriter(QObject):
     def index_movie(self, movie):
         self.index.index_movie(movie)
         self.db.create_doc(json.dumps(movie), doc_id=movie["_id"])
-        print movie['title'], "finished"
-    def printFin(self):
-        print "finished!"
+        L.d("%s finished" % movie['title'])
 
 class IndexThread (QThread):
     def __init__ (self, media_path, parent = None):
@@ -56,7 +55,7 @@ class IndexThread (QThread):
         self.media_path = media_path
 
     def run(self):
-        print "running"
+        L.d("running")
         rex = re.compile(".*\[(\d{7})\]$")
         imdb_db = imdb.IMDb()
         tp = QThreadPool.globalInstance()
@@ -80,9 +79,6 @@ class IndexThread (QThread):
                 pass
         print count
         self.exec_()
-
-def finished():
-    print '\n\nFINISHED!!!'
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) 
