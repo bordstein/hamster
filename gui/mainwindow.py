@@ -3,13 +3,12 @@
 import sys
 from PySide import QtGui
 from qtgui import Ui_MainWindow
-import u1db
 import json
 from whooshresmodel import ResultViewModel
-from indexer.hamsterindex import HamsterIndex
 from util.strings import humanize_mins
 from indexer.qindexer import IndexThread
 from util.downloader import DownloadManager
+from util.files import get_user_index, get_user_db
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -19,6 +18,8 @@ font-size:36pt; font-weight:600;">%s</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px;
 margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">votes</p>"""
+
+MOVIE_DIR = "/media/DATA/media/movies/"
 
 class MyForm(QtGui.QMainWindow):
     def __init__(self, parent=None):
@@ -34,8 +35,8 @@ class MyForm(QtGui.QMainWindow):
         tv.setShowGrid(False)
         #model = MyTableModel(self.db, header, tv)
         #titles = self.db.get_movie_titles()
-        self.index = HamsterIndex("/media/DATA/hamster/hamster.idx")
-        self.db = u1db.open("/media/DATA/hamster/hamster.db", create=True)
+        self.index = get_user_index()
+        self.db = get_user_db()
         results = self.index.list_all()
         self.model = ResultViewModel(results, header, tv)
         #model = QtGui.QStandardItemModel()
@@ -65,8 +66,7 @@ class MyForm(QtGui.QMainWindow):
         self.ui.action_sync_now.triggered.connect(self.sync)
 
     def sync(self):
-        #self.t = IndexThread("/media/DATA/media/movies/")
-        self.t = IndexThread("/tmp/mv/")
+        self.t = IndexThread(MOVIE_DIR)
         print self.t.finished.connect(self.sync_finished)
         self.t.start()
         print "started"

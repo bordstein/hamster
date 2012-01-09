@@ -3,14 +3,13 @@
 #from gevent import monkey; monkey.patch_socket()
 from util.dbcloner import normalize
 
-import u1db
 import sys
 import re
 import imdb
 import json
-from indexer.hamsterindex import HamsterIndex
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt
 from PySide.QtGui import QApplication
+from util.files import get_user_index, get_user_db
 import signal
 
 # allow aborting via ctrl + c
@@ -40,10 +39,10 @@ class Job(QRunnable):
         
 
 class IndexWriter(QObject):
-    def __init__(self, path_hamster_idx, path_u1db):
+    def __init__(self):
         QObject.__init__(self)
-        self.index = HamsterIndex(path_hamster_idx)
-        self.db = u1db.open(path_u1db, create=True)
+        self.index = get_user_index()
+        self.db = get_user_db()
     def index_movie(self, movie):
         self.index.index_movie(movie)
         self.db.create_doc(json.dumps(movie), doc_id=movie["_id"])
@@ -61,10 +60,7 @@ class IndexThread (QThread):
         rex = re.compile(".*\[(\d{7})\]$")
         imdb_db = imdb.IMDb()
         tp = QThreadPool.globalInstance()
-        #printer = IndexWriter("/media/DATA/hamster/hamster.idx",
-        #        "/media/DATA/hamster/hamster.db")
-        writer = IndexWriter("/tmp/hamster.idx",
-                "/tmp/hamster.db")
+        writer = IndexWriter()
         count = 0
 
         it = QDirIterator(self.media_path, QDirIterator.Subdirectories)
