@@ -1,7 +1,10 @@
 from multiprocessing.managers import BaseManager
-from whoosh_action.index import HamsterIndex
+from indexer.hamsterindex import HamsterIndex
 import u1db
 import json
+
+class QueueManager(BaseManager):
+    pass
 
 def index(movie):
     try:
@@ -12,9 +15,6 @@ def index(movie):
     except Exception as e:
         print "failed"
         print e
-
-class QueueManager(BaseManager):
-    pass
 
 if __name__ == "__main__":
 
