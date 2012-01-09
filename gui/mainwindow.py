@@ -9,6 +9,7 @@ from util.strings import humanize_mins
 from indexer.qindexer import IndexThread
 from util.downloader import DownloadManager
 from util.files import get_user_index, get_user_db
+import util.log as L
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -26,6 +27,7 @@ class MyForm(QtGui.QMainWindow):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.index_thread = False
         self.downloader = DownloadManager()
         self.downloader.dl_finished.connect(self.update_cover)
         header = ['Movie']
@@ -54,22 +56,16 @@ class MyForm(QtGui.QMainWindow):
         # set horizontal header properties
         hh = tv.horizontalHeader()
         hh.setStretchLastSection(True)
-        #print self.connect(tv,
-        #    QtCore.SIGNAL("selectionChanged(QItemSelection, QItemSelection)"),
-        #    self.update_selection)
-        #print self.connect(tv,
-        #    QtCore.SIGNAL("clicked(QModelIndex)"),
-        #    self.setCurrentSelection)
-        #tv.clicked.connect(self.setCurrentSelection)
+
         selectionModel.selectionChanged.connect(self.setCurrentSelection)
         self.ui.search_bar.textChanged.connect(self.update_model)
         self.ui.action_sync_now.triggered.connect(self.sync)
 
     def sync(self):
-        self.t = IndexThread(MOVIE_DIR)
-        print self.t.finished.connect(self.sync_finished)
-        self.t.start()
-        print "started"
+        self.index_thread = IndexThread(MOVIE_DIR)
+        print self.index_thread.finished.connect(self.sync_finished)
+        self.index_thread.start()
+        L.d("syncer started")
 
     def update_cover(self, url, filename):
         if self.current_url == url:
@@ -77,7 +73,7 @@ class MyForm(QtGui.QMainWindow):
             self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
 
     def sync_finished(self):
-        print "\nsync finished"
+        L.d("\nsync finished")
 
     def update_model(self, new_text):
         search_string = str(new_text)
@@ -135,6 +131,17 @@ class MyForm(QtGui.QMainWindow):
         if url:
             #filename, msg = urllib.urlretrieve(url)
             self.downloader.do_download(url)
+
+    def closeEvent(self, event):
+        L.d("shutdown requested")
+        self.shut_down()
+        event.accept()
+
+    def shut_down(self):
+        if self.index_thread and self.index_thread.isRunning():
+            L.d("stopping indexer thread")
+            self.index_thread.quit()
+        L.d("goodby")
 
 if __name__ == "__main__":
   app = QtGui.QApplication(sys.argv)
