@@ -2,6 +2,8 @@
 import os
 import re
 import platform
+import u1db
+from indexer.hamsterindex import HamsterIndex
 from subprocess import Popen
 rex = re.compile(r".*\.(avi|mkv|mov)")
 
@@ -33,6 +35,25 @@ def os_open_file(full_file_path):
         Popen([cmd, full_file_path])
         return
     print "no suitible command to open file on system found"
+
+def get_user_index():
+    hamster_dir = _get_hamster_dir()
+    idx_dir = os.path.join(hamster_dir, "hamster.idx")
+    idx = HamsterIndex(idx_dir)
+    return idx
+
+def get_user_db():
+    hamster_dir = _get_hamster_dir()
+    db_file = os.path.join(hamster_dir, "hamster.db")
+    db = u1db.open(db_file, create=True)
+    return db
+
+def _get_hamster_dir():
+    hamster_dir = os.path.join(os.getenv('HOME'), ".hamster")
+    if not os.path.exists(hamster_dir):
+        os.mkdir(hamster_dir)
+        #TODO catch exception
+    return hamster_dir
 
 if __name__ == "__main__":
     import sys
