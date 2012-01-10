@@ -21,13 +21,18 @@ class WorkerObject(QObject):
     finsig = Signal()
 
 class Job(QRunnable): 
-    def __init__(self, imdb_db, imdb_id): 
+    def __init__(self, imdb_db, imdb_id, stopvar): 
         QRunnable.__init__(self) 
         self.imdb_id = imdb_id 
         self.imdb_db = imdb_db
         self.obj = WorkerObject()
+        self.thread = stopvar
 
     def run(self): 
+        if self.thread.stopvar:
+            # threadpool already stopped - do nothing
+            return
+
         L.d( "fetching %s ..." % self.imdb_id)
         movie = self.imdb_db.get_movie(self.imdb_id)
         nm = normalize(movie)
@@ -56,6 +61,7 @@ class IndexThread (QThread):
 
     def run(self):
         L.d("running")
+        self.stopvar = False
         rex = re.compile(".*\[(\d{7})\]$")
         imdb_db = imdb.IMDb()
         tp = QThreadPool.globalInstance()
@@ -71,7 +77,7 @@ class IndexThread (QThread):
                 if match:
                     count += 1
                     imdb_id = match.group(1)
-                    j = Job(imdb_db, imdb_id) 
+                    j = Job(imdb_db, imdb_id, self) 
                     j.obj.finished.connect(writer.index_movie,
                             Qt.QueuedConnection)
                     tp.start(j) 
@@ -79,13 +85,17 @@ class IndexThread (QThread):
                 pass
         print count
         self.exec_()
+    
+    def set_stopped(self):
+        L.d("setting stopvar")
+        self.stopvar = True
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) 
     tp = QThreadPool.globalInstance()
     tp.setMaxThreadCount(8) 
 
-    t = IndexThread("/tmp/mv/")
+    t = IndexThread("/media/DATA/media/movies/")
     t.start()
     sys.exit(app.exec_())
 

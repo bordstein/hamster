@@ -2,6 +2,7 @@
 
 import sys
 from PySide import QtGui
+from PySide.QtCore import Signal, Qt, QTimer
 from qtgui import Ui_MainWindow
 import json
 from whooshresmodel import ResultViewModel
@@ -23,6 +24,7 @@ margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
 MOVIE_DIR = "/media/DATA/media/movies/"
 
 class MyForm(QtGui.QMainWindow):
+    shutmedown = Signal()
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
@@ -63,7 +65,8 @@ class MyForm(QtGui.QMainWindow):
 
     def sync(self):
         self.index_thread = IndexThread(MOVIE_DIR)
-        print self.index_thread.finished.connect(self.sync_finished)
+        print self.shutmedown.connect(self.index_thread.set_stopped,
+                Qt.QueuedConnection)
         self.index_thread.start()
         L.d("syncer started")
 
@@ -71,9 +74,6 @@ class MyForm(QtGui.QMainWindow):
         if self.current_url == url:
             img = QtGui.QImage(filename)
             self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
-
-    def sync_finished(self):
-        L.d("\nsync finished")
 
     def update_model(self, new_text):
         search_string = str(new_text)
@@ -134,14 +134,26 @@ class MyForm(QtGui.QMainWindow):
 
     def closeEvent(self, event):
         L.d("shutdown requested")
-        self.shut_down()
-        event.accept()
-
-    def shut_down(self):
+        L.d("hiding window")
+        self.setVisible(False)
         if self.index_thread and self.index_thread.isRunning():
-            L.d("stopping indexer thread")
-            self.index_thread.quit()
-        L.d("goodby")
+            event.ignore()
+            L.d("setting quit")
+            self.shutmedown.emit()
+            QTimer.singleShot(10, self.really_close)
+        else:
+            L.d("goodby")
+            event.accept()
+
+    def really_close(self):
+        L.d("stopping indexer thread")
+        self.index_thread.quit()
+        L.d("waiting for threadpool to be done...")
+        from PySide.QtCore import QThreadPool
+        tp = QThreadPool.globalInstance()
+        tp.waitForDone()
+        L.d("Threadpool done")
+        self.close()
 
 if __name__ == "__main__":
   app = QtGui.QApplication(sys.argv)
