@@ -20,4 +20,16 @@
 ## 
 #############################################################################
 
+from distutils.core import setup
 
+INSTALL_REQUIRES = ['u1db', 'whoosh', 'imdbpy']
+
+setup(
+    name='hamster',
+    version='0.1dev',
+    packages=['hamster'],
+    license='GPLv2',
+    long_description=open('README.md').read(),
+    install_requires=INSTALL_REQUIRES,
+    scripts=['bin/hamster']
+)
