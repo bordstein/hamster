@@ -26,6 +26,8 @@ MOVIE_DIR = "/media/DATA/media/movies/"
 class MyForm(QtGui.QMainWindow):
     shutmedown = Signal()
     def __init__(self, parent=None):
+        QCoreApplication.setOrganizationName("Hamster Inc.")
+        QCoreApplication.setApplicationName("Hamster")
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -63,8 +65,6 @@ class MyForm(QtGui.QMainWindow):
         selectionModel.selectionChanged.connect(self.setCurrentSelection)
         self.ui.search_bar.textChanged.connect(self.update_model)
         self.ui.action_sync_now.triggered.connect(self.sync)
-        QCoreApplication.setOrganizationName("Hamster Inc.")
-        QCoreApplication.setApplicationName("Hamster")
         self.settings = QSettings()
         global MOVIE_DIR
         MOVIE_DIR = self.settings.value("movie_dir", MOVIE_DIR)
