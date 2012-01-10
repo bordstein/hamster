@@ -128,7 +128,7 @@ if __name__ == "__main__":
     tp = QThreadPool.globalInstance()
     tp.setMaxThreadCount(8) 
 
-    t = IndexThread("/media/DATA/media/movies/")
+    t = IndexThread("/tmp/mv/")
     t.start()
     sys.exit(app.exec_())
 

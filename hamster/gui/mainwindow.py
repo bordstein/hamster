@@ -44,7 +44,7 @@ font-size:36pt; font-weight:600;">%s</span></p>
 margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">votes</p>"""
 
-MOVIE_DIR = "/media/DATA/media/movies/"
+MOVIE_DIR = "/tmp/movies/"
 
 class MyForm(QtGui.QMainWindow):
     shutmedown = Signal()

@@ -78,7 +78,8 @@ class HamsterIndex(object):
 
 if __name__ == "__main__":
     import sys
-    idx = HamsterIndex("/media/DATA/hamster/hamster.idx")
+    from hamster.util.files import get_user_index
+    idx = get_user_index()
     idx.list_all()
     query = sys.argv[1]
     print "query:", query
