@@ -7,7 +7,7 @@ import sys
 import re
 import imdb
 import json
-from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt
+from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
 from util.files import get_user_index, get_user_db
 import util.log as L
@@ -64,6 +64,7 @@ class IndexThread (QThread):
         self.stopvar = False
         rex = re.compile(".*\[(\d{7})\]$")
         imdb_db = imdb.IMDb()
+        db = get_user_db()
         tp = QThreadPool.globalInstance()
         writer = IndexWriter()
         count = 0
@@ -77,10 +78,14 @@ class IndexThread (QThread):
                 if match:
                     count += 1
                     imdb_id = match.group(1)
-                    j = Job(imdb_db, imdb_id, self) 
-                    j.obj.finished.connect(writer.index_movie,
-                            Qt.QueuedConnection)
-                    tp.start(j) 
+                    movie = db.get_doc(imdb_id)
+                    if movie:
+                        L.d("%s already in db - skipping" % imdb_id)
+                    else:
+                        j = Job(imdb_db, imdb_id, self) 
+                        j.obj.finished.connect(writer.index_movie,
+                                Qt.QueuedConnection)
+                        tp.start(j) 
             except:
                 pass
         print count
@@ -89,6 +94,13 @@ class IndexThread (QThread):
     def set_stopped(self):
         L.d("setting stopvar")
         self.stopvar = True
+        QTimer.singleShot(10, self._shutdown)
+
+    def _shutdown(self):
+        tp = QThreadPool.globalInstance()
+        L.d("waiting for threadpool to be done...")
+        tp.waitForDone()
+        self.quit()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) 
