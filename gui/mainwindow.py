@@ -32,6 +32,7 @@ class MyForm(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.index_thread = False
+        self._shutdown_requested = False
         self.downloader = DownloadManager()
         self.downloader.dl_finished.connect(self.update_cover)
         header = ['Movie']
@@ -71,6 +72,7 @@ class MyForm(QtGui.QMainWindow):
 
     def sync(self):
         self.index_thread = IndexThread(MOVIE_DIR)
+        print self.index_thread.finished.connect(self._indexer_closed)
         print self.shutmedown.connect(self.index_thread.set_stopped,
                 Qt.QueuedConnection)
         self.index_thread.start()
@@ -138,6 +140,11 @@ class MyForm(QtGui.QMainWindow):
             #filename, msg = urllib.urlretrieve(url)
             self.downloader.do_download(url)
 
+    def _indexer_closed(self):
+        L.d("indexer finished")
+        if self._shutdown_requested:
+            self.close()
+
     def closeEvent(self, event):
         L.d("shutdown requested")
         L.d("hiding window")
@@ -145,19 +152,21 @@ class MyForm(QtGui.QMainWindow):
         if self.index_thread and self.index_thread.isRunning():
             event.ignore()
             L.d("setting quit")
-            self.shutmedown.emit()
-            QTimer.singleShot(10, self.really_close)
+            self._shutdown_requested = True
+            self.index_thread.set_stopped()
+            #self.shutmedown.emit()
+            #QTimer.singleShot(10, self.really_close)
         else:
             L.d("goodby")
             event.accept()
 
     def really_close(self):
-        L.d("stopping indexer thread")
-        self.index_thread.quit()
-        L.d("waiting for threadpool to be done...")
-        from PySide.QtCore import QThreadPool
-        tp = QThreadPool.globalInstance()
-        tp.waitForDone()
+        #L.d("stopping indexer thread")
+        #self.index_thread.quit()
+        #L.d("waiting for threadpool to be done...")
+        #from PySide.QtCore import QThreadPool
+        #tp = QThreadPool.globalInstance()
+        #tp.waitForDone()
         L.d("Threadpool done")
         self.close()
 
