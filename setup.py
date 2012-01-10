@@ -22,7 +22,7 @@
 
 from distutils.core import setup
 
-INSTALL_REQUIRES = ['u1db', 'whoosh', 'imdbpy']
+INSTALL_REQUIRES = ['u1db', 'whoosh', 'imdbpy', 'PySide']
 
 setup(
     name='hamster',
