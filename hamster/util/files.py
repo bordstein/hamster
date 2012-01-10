@@ -5,7 +5,7 @@ import re
 import platform
 from PySide.QtGui import QDesktopServices
 import u1db
-from indexer.hamsterindex import HamsterIndex
+from hamster.indexer.hamsterindex import HamsterIndex
 from subprocess import Popen
 
 rex = re.compile(r".*\.(avi|mkv|mov)")

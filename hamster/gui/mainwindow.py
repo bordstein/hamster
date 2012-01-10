@@ -6,11 +6,11 @@ from PySide.QtCore import Signal, Qt, QTimer, QCoreApplication, QSettings
 from qtgui import Ui_MainWindow
 import json
 from whooshresmodel import ResultViewModel
-from util.strings import humanize_mins
-from indexer.qindexer import IndexThread
-from util.downloader import DownloadManager
-from util.files import get_user_index, get_user_db
-import util.log as L
+from hamster.util.strings import humanize_mins
+from hamster.indexer.qindexer import IndexThread
+from hamster.util.downloader import DownloadManager
+from hamster.util.files import get_user_index, get_user_db
+import hamster.util.log as L
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>

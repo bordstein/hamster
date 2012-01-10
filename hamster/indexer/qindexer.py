@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #from gevent import monkey; monkey.patch_socket()
-from util.dbcloner import normalize
+from hamster.util.dbcloner import normalize
 
 import sys
 import re
@@ -9,8 +9,8 @@ import imdb
 import json
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
-from util.files import get_user_index, get_user_db
-import util.log as L
+from hamster.util.files import get_user_index, get_user_db
+import hamster.util.log as L
 import signal
 
 # allow aborting via ctrl + c
