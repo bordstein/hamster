@@ -1,10 +1,13 @@
 #!/usr/bin/env python
+
 import os
 import re
 import platform
+from PySide.QtGui import QDesktopServices
 import u1db
 from indexer.hamsterindex import HamsterIndex
 from subprocess import Popen
+
 rex = re.compile(r".*\.(avi|mkv|mov)")
 
 def get_movie_files(directory):
@@ -49,9 +52,9 @@ def get_user_db():
     return db
 
 def _get_hamster_dir():
-    hamster_dir = os.path.join(os.getenv('HOME'), ".hamster")
+    hamster_dir = QDesktopServices.storageLocation(QDesktopServices.DataLocation)
     if not os.path.exists(hamster_dir):
-        os.mkdir(hamster_dir)
+        os.makedirs(hamster_dir)
         #TODO catch exception
     return hamster_dir
 
