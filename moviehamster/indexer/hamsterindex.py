@@ -78,7 +78,7 @@ class HamsterIndex(object):
 
 if __name__ == "__main__":
     import sys
-    from hamster.util.files import get_user_index
+    from moviehamster.util.files import get_user_index
     idx = get_user_index()
     idx.list_all()
     query = sys.argv[1]

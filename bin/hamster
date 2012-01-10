@@ -22,7 +22,7 @@
 ## 
 #############################################################################
 
-from hamster.gui.mainwindow import MyForm
+from moviehamster.gui.mainwindow import MyForm
 from PySide import QtGui
 import sys
 

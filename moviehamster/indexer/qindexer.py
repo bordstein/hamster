@@ -22,7 +22,7 @@
 ## 
 #############################################################################
 
-from hamster.util.dbcloner import normalize
+from moviehamster.util.dbcloner import normalize
 
 import sys
 import re
@@ -30,8 +30,8 @@ import imdb
 import json
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
-from hamster.util.files import get_user_index, get_user_db
-import hamster.util.log as L
+from moviehamster.util.files import get_user_index, get_user_db
+import moviehamster.util.log as L
 import signal
 
 # allow aborting via ctrl + c

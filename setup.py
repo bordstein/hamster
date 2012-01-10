@@ -27,7 +27,7 @@ INSTALL_REQUIRES = ['u1db', 'whoosh', 'imdbpy', 'PySide']
 setup(
     name='hamster',
     version='0.1dev',
-    packages=['hamster'],
+    packages=['moviehamster'],
     license='GPLv2',
     long_description=open('README.md').read(),
     install_requires=INSTALL_REQUIRES,
