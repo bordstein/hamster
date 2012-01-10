@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>879</width>
-    <height>589</height>
+    <width>1016</width>
+    <height>581</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="explorer">
        <layout class="QGridLayout" name="gridLayout">
@@ -584,7 +584,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>879</width>
+     <width>1016</width>
      <height>30</height>
     </rect>
    </property>
@@ -615,7 +615,7 @@ p, li { white-space: pre-wrap; }
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_3">
         <attribute name="title">
@@ -744,9 +744,7 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
  </widget>
- <resources>
-  <include location="../resources/resource.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>tabWidget_2</sender>
