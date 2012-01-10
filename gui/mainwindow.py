@@ -2,7 +2,7 @@
 
 import sys
 from PySide import QtGui
-from PySide.QtCore import Signal, Qt, QTimer
+from PySide.QtCore import Signal, Qt, QTimer, QCoreApplication, QSettings
 from qtgui import Ui_MainWindow
 import json
 from whooshresmodel import ResultViewModel
@@ -63,6 +63,12 @@ class MyForm(QtGui.QMainWindow):
         selectionModel.selectionChanged.connect(self.setCurrentSelection)
         self.ui.search_bar.textChanged.connect(self.update_model)
         self.ui.action_sync_now.triggered.connect(self.sync)
+        QCoreApplication.setOrganizationName("Hamster Inc.")
+        QCoreApplication.setApplicationName("Hamster")
+        self.settings = QSettings()
+        global MOVIE_DIR
+        MOVIE_DIR = self.settings.value("movie_dir", MOVIE_DIR)
+        self.settings.setValue("movie_dir", MOVIE_DIR)
 
     def sync(self):
         self.index_thread = IndexThread(MOVIE_DIR)
