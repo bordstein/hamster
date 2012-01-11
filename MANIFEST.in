@@ -1,0 +1,5 @@
+include setup.py
+include bin/hamster
+include moviehamster/__init__.py
+include LICENSE
+include README.md
