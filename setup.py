@@ -20,20 +20,30 @@
 ## 
 #############################################################################
 
-classifiers = """\
-        Development Status :: 2 - Pre-Alpha
+from distutils.core import setup
+
+INSTALL_REQUIRES = ['u1db', 'whoosh', 'imdbpy']
+
+PYSIDE_URL = 'http://developer.qt.nokia.com/wiki/PySideDownloads'
+
+PYSIDE_WARNING = '''
+\nWARNING: hamster requires PySide to be installed\n
+Please install PySide from %s
+                 ''' % PYSIDE_URL
+
+CLASSIFIERS = """Development Status :: 2 - Pre-Alpha
         Intended Audience :: End Users/Desktop
         License :: OSI Approved :: GNU General Public License (GPL)
         Programming Language :: Python
         Topic :: Multimedia :: Video
         Operating System :: Microsoft :: Windows
         Operating System :: MacOS :: MacOS X
-        Operating System :: Unix
-        """
+        Operating System :: Unix"""
 
-from distutils.core import setup
-
-INSTALL_REQUIRES = ['u1db', 'whoosh', 'imdbpy', 'PySide']
+try:
+    __import__('PySide')
+except ImportError:
+    print(PYSIDE_WARNING)
 
 setup(
     name='hamster',
@@ -47,7 +57,7 @@ setup(
     long_description=open('README.md').read(),
     url='https://github.com/nurio/hamster',
     download_url='https://github.com/nurio/hamster',
-    classifiers = filter(None, classifiers.split("\n")),
+    classifiers = filter(None, CLASSIFIERS.split("\n")),
     install_requires=INSTALL_REQUIRES,
     scripts=['bin/hamster']
 )
