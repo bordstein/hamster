@@ -1,4 +1,5 @@
 import json
+from copy import deepcopy
 
 class MovieList(list):
     def __init__(self, username, listname):
@@ -16,10 +17,21 @@ class MovieList(list):
         json_obj['content'] = self
         return json.dumps(json_obj)
 
+    def _to_doc(self):
+        doc = deepcopy(self._doc)
+        doc.content = self._to_json()
+        return doc
+
 def movielist_from_json(json_string):
     loaded_obj = json.loads(json_string)
     ml = MovieList(loaded_obj["user"], loaded_obj['name'])
     ml.extend(loaded_obj["content"])
+    return ml
+
+def movielist_from_doc(doc):
+    ml = movielist_from_json(doc.content)
+    doc.content = None
+    ml._doc = doc
     return ml
 
 
