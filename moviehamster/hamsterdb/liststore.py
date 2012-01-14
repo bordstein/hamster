@@ -43,6 +43,9 @@ class ListStore(object):
 
     def get(self, name):
         doc = self.db.get_doc(name)
+        if doc:
+            ml = movielist_from_doc(doc)
+            return ml
 
     def get_user_list(self, name):
         doc = self.db.get_doc("%s:%s" % (self.username, name))
