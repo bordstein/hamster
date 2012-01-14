@@ -19,7 +19,7 @@
 ##  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ## 
 #############################################################################
-
+import re
 
 from PySide.QtCore import QAbstractTableModel, Qt
  
@@ -56,7 +56,7 @@ class ResultViewModel(QAbstractTableModel):
             elif index.column() == 1:
                 return self.results[index.row()]["year"]
             elif index.column() == 2:
-                return self.results[index.row()]["rating"]
+                return str(self.results[index.row()]["rating"])
             elif index.column() == 3:
                 # TODO: get favourite
                 return None

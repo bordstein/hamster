@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Sat Jan 14 18:21:08 2012
+# Created: Sat Jan 14 18:31:20 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -17,9 +17,9 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.tableView = QtGui.QTableView(self.centralwidget)
-        self.tableView.setObjectName("tableView")
-        self.gridLayout.addWidget(self.tableView, 1, 0, 1, 1)
+        self.movieList = QtGui.QTableView(self.centralwidget)
+        self.movieList.setObjectName("movieList")
+        self.gridLayout.addWidget(self.movieList, 1, 0, 1, 1)
         self.widget = QtGui.QWidget(self.centralwidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
