@@ -25,16 +25,10 @@
 
 from PySide import QtGui
 import os
-from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
-<<<<<<< HEAD
-from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
-from moviehamster import log
 from moviehamster.gui.util import humanize_mins
-=======
-from PySide.QtGui import QDesktopServices, QAbstractItemView
+from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
 from moviehamster.indexer import IndexThread
->>>>>>> 83bb005c43ba95d1a115a68bcfdaf738092abc58
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
 from qtgui import Ui_MainWindow
