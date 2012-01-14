@@ -28,11 +28,14 @@ import os
 from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
 from PySide.QtGui import QDesktopServices, QAbstractItemView
+from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
+import moviehamster.log as L
 from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
 
 class GUI(QtGui.QMainWindow):
+    shutmedown = Signal()
     def _init_config(self):
         QCoreApplication.setOrganizationName("Hamster Inc.")
         QCoreApplication.setApplicationName("Hamster")
@@ -43,9 +46,11 @@ class GUI(QtGui.QMainWindow):
         if not os.path.exists(self.db_dir):
             os.makedirs(self.db_dir)
             #TODO catch exception
-        self.db = HamsterDB(os.environ['USERNAME'], self.db_dir + '/' + 'hamster.idx',
+        self.index_path = self.db_dir + '/' + 'hamster.idx'
+        self.db_path = self.db_dir + '/' + 'hamster.db'
+        self.user = os.environ['USERNAME']
+        self.db = HamsterDB(self.user, self.index_path, self.db_path)
         #TODO ask username from user?
-                            self.db_dir + '/' + 'hamster.db',)
 
     def _init_movie_list(self):
         tv = self.ui.movieList
@@ -73,6 +78,39 @@ class GUI(QtGui.QMainWindow):
             titles = self.db.list_all_movies()
         self.model.setResults(titles)
 
+    def sync(self):
+        if self.index_thread and self.index_thread.isRunning():
+            self.index_thread.set_stopped()
+        else:
+            self.ui.button_sync.setText("Stop")
+            self.index_thread = IndexThread("/media/DATA/media/movies/", self.user,
+                    self.index_path, self.db_path)
+            self.index_thread.finished.connect(self._indexer_closed)
+            self.shutmedown.connect(self.index_thread.set_stopped,
+                    Qt.QueuedConnection)
+            self.index_thread.start()
+            L.d("syncer started")
+
+    def _indexer_closed(self):
+        L.d("indexer finished")
+        if self._shutdown_requested:
+            self.close()
+        else:
+            self.ui.button_sync.setText("Sync")
+
+    def closeEvent(self, event):
+        L.d("shutdown requested")
+        L.d("hiding window")
+        self.setVisible(False)
+        if self.index_thread and self.index_thread.isRunning():
+            event.ignore()
+            L.d("setting quit")
+            self._shutdown_requested = True
+            self.index_thread.set_stopped()
+        else:
+            L.d("goodby")
+            event.accept()
+
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
@@ -80,6 +118,9 @@ class GUI(QtGui.QMainWindow):
         self._init_config()
         self._init_db()
         self._init_movie_list()
+        self.index_thread = None
+        self._shutdown_requested = False
 
         self.ui.filter.textChanged.connect(self._update_model)
+        self.ui.button_sync.clicked.connect(self.sync)
 
