@@ -83,7 +83,8 @@ class GUI(QtGui.QMainWindow):
             self.index_thread.set_stopped()
         else:
             self.ui.button_sync.setText("Stop")
-            self.index_thread = IndexThread("/media/DATA/media/movies/", self.user,
+            movie_dir = self.settings.value("movie_dir")
+            self.index_thread = IndexThread(movie_dir, self.user,
                     self.index_path, self.db_path)
             self.index_thread.finished.connect(self._indexer_closed)
             self.shutmedown.connect(self.index_thread.set_stopped,
