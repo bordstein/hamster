@@ -57,24 +57,18 @@ def _dictify(obj):
         new_dict[key] = normalize(entry)
     return new_dict
 
+def convert_person(imdb_person):
+    person = {}
+    person['name'] = imdb_person['name']
+    person['headshot'] = imdb_person['headshot']
+    person['mini biography'] = imdb_person['mini biography']
+    person['actor'] = _get_movie_ids_for_person(imdb_person, "actor")
+    person['director'] = _get_movie_ids_for_person(imdb_person, "director")
+    person['producer'] = _get_movie_ids_for_person(imdb_person, "producer")
+    return person
 
-if __name__ == "__main__":
-    import json
-    import u1db
-
-    # fetching imdb infos
-    imdb_db = imdb.IMDb()
-    imdb_id = "0325980"
-    movie = imdb_db.get_movie(imdb_id)
-
-    # normalize movie
-    nm = normalize(movie)
-
-    # connect to u1db and save doc
-    db = u1db.open(":memory:", create=True)
-    db.create_doc(json.dumps(nm), doc_id=imdb_id)
-    
-    # fetch, load and print doc
-    restored_doc = db.get_doc(imdb_id)
-    print json.loads(restored_doc.content)
-    print "\n\nok"
+def _get_movie_ids_for_person(imdb_person, role):
+    tmp_list = []
+    for movie in imdb_person.get(role, []):
+        tmp_list.append(movie.getID())
+    return tmp_list
