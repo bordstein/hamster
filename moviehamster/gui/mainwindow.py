@@ -32,12 +32,12 @@ from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
 
 class GUI(QtGui.QMainWindow):
-    def init_config(self):
+    def _init_config(self):
         QCoreApplication.setOrganizationName("Hamster Inc.")
         QCoreApplication.setApplicationName("Hamster")
         self.settings = QSettings()
 
-    def init_db(self):
+    def _init_db(self):
         self.db_dir = QDesktopServices.storageLocation(QDesktopServices.DataLocation)
         if not os.path.exists(self.db_dir):
             os.makedirs(self.db_dir)
@@ -45,22 +45,31 @@ class GUI(QtGui.QMainWindow):
         self.db = HamsterDB(self.db_dir + '/' + 'hamster.idx',
                             self.db_dir + '/' + 'hamster.db',)
 
-    def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
-        self.ui = Ui_MainWindow()
-        self.ui.setupUi(self)
-
-        self.init_config()
-
-        self.init_db()
-
+    def _init_movie_list(self):
         tv = self.ui.movieList
         tv.setShowGrid(False)
         results = self.db.list_all_movies()
         self.model = ResultViewModel(results, tv)
         tv.setModel(self.model)
         tv.resizeColumnsToContents()
-
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
+
+    def _update_model(self, new_text):
+        search_string = str(new_text)
+        if search_string:
+            titles = self.db.search(search_string)
+        else:
+            titles = self.db.list_all_movies()
+        self.model.setResults(titles)
+
+    def __init__(self, parent=None):
+        QtGui.QMainWindow.__init__(self, parent)
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self._init_config()
+        self._init_db()
+        self._init_movie_list()
+
+        self.ui.filter.textChanged.connect(self._update_model)
 

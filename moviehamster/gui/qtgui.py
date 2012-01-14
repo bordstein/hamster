@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Sat Jan 14 18:31:20 2012
+# Created: Sat Jan 14 19:22:13 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -30,9 +30,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3 = QtGui.QHBoxLayout(self.widget)
         self.horizontalLayout_3.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.lineEdit = QtGui.QLineEdit(self.widget)
-        self.lineEdit.setObjectName("lineEdit")
-        self.horizontalLayout_3.addWidget(self.lineEdit)
+        self.filter = QtGui.QLineEdit(self.widget)
+        self.filter.setObjectName("filter")
+        self.horizontalLayout_3.addWidget(self.filter)
         self.checkBox = QtGui.QCheckBox(self.widget)
         self.checkBox.setObjectName("checkBox")
         self.horizontalLayout_3.addWidget(self.checkBox)
