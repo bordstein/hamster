@@ -93,11 +93,27 @@ class HamsterDB(object):
                 retval.append(res)
         return retval
 
-    def search(self, query):
-        pass
+    def search(self, querystring):
+        querystring = unicode(querystring)
+        myquery = self.q_parser.parse(querystring)
+
+        with self.index.searcher() as searcher:
+            results = searcher.search(myquery)
+            retval = []
+            for res in results:
+                retval.append(res.fields())
+            return retval
 
 if __name__ == "__main__":
     db = HamsterDB("/tmp/hamster.idx", "/tmp/hamster.db")
     movie = db.get_movie("0325980")
+    movie = db.get_movie("0168122")
+    print "movie"
     print movie['title']
+    print "\nall movies"
     print db.list_all_movies()
+    results = db.search("Pirates")
+    print "\npirate movies:"
+    print len(results)
+    for res in results:
+        print res
