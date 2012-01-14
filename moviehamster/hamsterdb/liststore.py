@@ -7,7 +7,7 @@ class ListStore(object):
         self.username = username
 
     def _create_index(self):
-        indexes = db.list_indexes()
+        indexes = self.db.list_indexes()
         if "by-name" not in [idx[0] for idx in indexes]:
             self.db.create_index("by-name", ['name'])
         if "userlists-by-name" not in [idx[0] for idx in indexes]:

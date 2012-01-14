@@ -42,7 +42,8 @@ class GUI(QtGui.QMainWindow):
         if not os.path.exists(self.db_dir):
             os.makedirs(self.db_dir)
             #TODO catch exception
-        self.db = HamsterDB(self.db_dir + '/' + 'hamster.idx',
+        self.db = HamsterDB(os.environ['USERNAME'], self.db_dir + '/' + 'hamster.idx',
+        #TODO ask username from user?
                             self.db_dir + '/' + 'hamster.db',)
 
     def _init_movie_list(self):
