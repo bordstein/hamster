@@ -25,8 +25,9 @@
 
 from PySide import QtGui
 import os
+from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
-from PySide.QtGui import QDesktopServices
+from PySide.QtGui import QDesktopServices, QAbstractItemView
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
@@ -55,6 +56,14 @@ class GUI(QtGui.QMainWindow):
         tv.resizeColumnsToContents()
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
+        tv.setSelectionBehavior(QAbstractItemView.SelectRows)
+        tv.doubleClicked.connect(self._open_movie)
+
+    def _open_movie(self, idx):
+        imdb_id = self.model.getIdForRow(idx.row())
+        m = self.db.get_movie(imdb_id)
+        pprint(m)
+        self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
 
     def _update_model(self, new_text):
         search_string = str(new_text)
