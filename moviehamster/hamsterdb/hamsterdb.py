@@ -60,9 +60,19 @@ class HamsterDB(object):
             # not in local db, fetch from imdb
             imdb_movie = self.imdb.get_movie(imdb_id)
             movie = normalize(imdb_movie)
+            self.save_movie(movie, imdb_id)
+        return movie
+
+    def has_movie(self, imdb_id):
+        movie = self._fetch_u1db_movie(imdb_id)
+        if not movie:
+            return False
+        return True
+
+
+    def save_movie(self, movie, imdb_id):
             self.db.create_doc(json.dumps(movie), doc_id=imdb_id)
             self._index_movie(imdb_id, movie)
-        return movie
     
     def _index_movie(self, imdb_id, movie):
         u = unicode
@@ -118,9 +128,7 @@ class HamsterDB(object):
 if __name__ == "__main__":
     db = HamsterDB("user", "/tmp/hamster.idx", "/tmp/hamster.db")
     person = db.get_person("person_0000136")
-    print person
-    import sys
-    sys.exit()
+    print person['name']
     movie = db.get_movie("0325980")
     movie = db.get_movie("0168122")
     print "movie"

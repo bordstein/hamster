@@ -22,23 +22,22 @@
 ## 
 #############################################################################
 
-from moviehamster.util.dbcloner import normalize
+from moviehamster.hamsterdb.util import normalize
 
 import sys
 import re
 import imdb
-import json
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
-from moviehamster.util.files import get_user_index, get_user_db
-import moviehamster.util.log as L
+from moviehamster.hamsterdb.hamsterdb import HamsterDB
+import moviehamster.log as L
 import signal
 
 # allow aborting via ctrl + c
 signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 class WorkerObject(QObject):
-    finished = Signal(dict)
+    finished = Signal(dict, str)
     finsig = Signal()
 
 class Job(QRunnable): 
@@ -57,37 +56,38 @@ class Job(QRunnable):
         L.d( "fetching %s ..." % self.imdb_id)
         movie = self.imdb_db.get_movie(self.imdb_id)
         nm = normalize(movie)
-        nm['_id'] = str(self.imdb_id)
 
-        self.obj.finished.emit(nm)
+        self.obj.finished.emit(nm, str(self.imdb_id))
 
     def autoDelete(self):
         return True
         
 
 class IndexWriter(QObject):
-    def __init__(self):
+    def __init__(self, user, index_path, u1db_path):
         QObject.__init__(self)
-        self.index = get_user_index()
-        self.db = get_user_db()
-    def index_movie(self, movie):
-        self.index.index_movie(movie)
-        self.db.create_doc(json.dumps(movie), doc_id=movie["_id"])
+        self.db = HamsterDB(user, index_path, u1db_path)
+    def index_movie(self, movie, imdb_id):
+        self.db.save_movie(movie, imdb_id)
         L.d("%s finished" % movie['title'])
 
 class IndexThread (QThread):
-    def __init__ (self, media_path, parent = None):
+    def __init__ (self, media_path, user, index_path, u1db_path, parent = None):
         QThread.__init__(self, parent)
         self.media_path = media_path
+        self.user = user
+        self.index_path = index_path
+        self.u1db_path = u1db_path
 
     def run(self):
         L.d("running")
         self.stopvar = False
         rex = re.compile(".*\[(\d{7})\]$")
+        # initialize HamsterDB in this thread to avoid sqlite problems
+        db = HamsterDB(self.user, self.index_path, self.u1db_path)
         imdb_db = imdb.IMDb()
-        db = get_user_db()
         tp = QThreadPool.globalInstance()
-        writer = IndexWriter()
+        writer = IndexWriter(self.user, self.index_path, self.u1db_path)
         count = 0
 
         it = QDirIterator(self.media_path, QDirIterator.Subdirectories)
@@ -99,8 +99,8 @@ class IndexThread (QThread):
                 if match:
                     count += 1
                     imdb_id = match.group(1)
-                    movie = db.get_doc(imdb_id)
-                    if movie:
+                    already_in_db = db.has_movie(imdb_id)
+                    if already_in_db:
                         L.d("%s already in db - skipping" % imdb_id)
                     else:
                         j = Job(imdb_db, imdb_id, self) 
@@ -128,7 +128,9 @@ if __name__ == "__main__":
     tp = QThreadPool.globalInstance()
     tp.setMaxThreadCount(8) 
 
-    t = IndexThread("/tmp/mv/")
+    t = IndexThread("/path/to/movies/", "user",
+    "/path/to/hamster.idx",
+    "/path/to/hamster.db")
     t.start()
     sys.exit(app.exec_())
 
