@@ -29,12 +29,14 @@ from whoosh.qparser import QueryParser
 from whoosh.index import create_in, open_dir
 from schema import MovieSchema
 from util import normalize, convert_person
+from liststore import ListStore
 
 class HamsterDB(object):
-    def __init__(self, index_path, db_path):
+    def __init__(self, username, index_path, db_path):
         self._setup_whoosh_index(index_path)
         self._setup_u1db(db_path)
         self.imdb = IMDb()
+        self.lists = ListStore(self.db, username)
 
     def _setup_u1db(self, db_path):
         self.db = u1db.open(db_path, create=True)
@@ -112,8 +114,9 @@ class HamsterDB(object):
                 retval.append(res.fields())
             return retval
 
+
 if __name__ == "__main__":
-    db = HamsterDB("/tmp/hamster.idx", "/tmp/hamster.db")
+    db = HamsterDB("user", "/tmp/hamster.idx", "/tmp/hamster.db")
     person = db.get_person("person_0000136")
     print person
     import sys
