@@ -84,6 +84,15 @@ class HamsterDB(object):
     def get_person(self, imdb_id):
         pass
 
+    def list_all_movies(self):
+        num = 0
+        retval = []
+        with self.index.searcher() as searcher:
+            for res in searcher.reader().all_stored_fields():
+                num += 1
+                retval.append(res)
+        return retval
+
     def search(self, query):
         pass
 
@@ -91,3 +100,4 @@ if __name__ == "__main__":
     db = HamsterDB("/tmp/hamster.idx", "/tmp/hamster.db")
     movie = db.get_movie("0325980")
     print movie['title']
+    print db.list_all_movies()
