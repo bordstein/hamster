@@ -25,14 +25,23 @@
 
 from PySide import QtGui
 import os
-from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
-from PySide.QtGui import QDesktopServices, QAbstractItemView
+from moviehamster.gui.util import humanize_mins
+from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
 from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
+
+RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style="
+font-size:36pt; font-weight:600;">%s</span></p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px;
+margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
+<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">votes</p>"""
 
 class GUI(QtGui.QMainWindow):
     shutmedown = Signal()
@@ -66,8 +75,37 @@ class GUI(QtGui.QMainWindow):
 
     def _open_movie(self, idx):
         imdb_id = self.model.getIdForRow(idx.row())
-        m = self.db.get_movie(imdb_id)
-        pprint(m)
+        movie = self.db.get_movie(imdb_id)
+
+        plot_short = movie.get('plot outline', "")
+        plot = movie.get('plot', [""])[0]
+        genres = movie.get('genres', [""])
+        cast = movie.get('cast', [""])
+        countries = movie.get('countries', [""])
+        runtime = movie.get('runtimes', [""])[0]
+        # handle stuff like "USA:107" in runtime array
+        try:
+            if ":" in runtime:
+                runtime = runtime.split(":")[1]
+            runtime = humanize_mins(runtime)
+        except:
+            runtime = movie.get('runtimes', [""])[0] # reload
+            print "could not humanize", runtime, "for", id
+        imdb_rating = str(movie.get('rating', "-"))
+        director = movie.get('director', ["-"])[0]["name"]
+        title = movie['long imdb title']
+        title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
+
+        self.ui.btn_director.setText(director)
+        self.ui.l_length.setText(runtime)
+        self.ui.l_genres.setText(', '.join(genres))
+        self.ui.l_countries.setText(', '.join(countries))
+        self.ui.box_cast.addWidget(QPushButton('hallo'))
+        self.ui.box_cast.addWidget(QPushButton('hallo2'))
+        self.ui.box_cast.addWidget(QPushButton('hallo3'))
+        self.ui.box_cast.addWidget(QPushButton('hallo3'))
+        self.ui.box_cast.addWidget(QPushButton('hallo3'))
+        self.ui.box_cast.addWidget(QPushButton('hallo3'))
         self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
 
     def _update_model(self, new_text):
@@ -119,6 +157,9 @@ class GUI(QtGui.QMainWindow):
         self._init_config()
         self._init_db()
         self._init_movie_list()
+
+        self.ui.stackedWidget.setCurrentWidget(self.ui.library_view)
+
         self.index_thread = None
         self._shutdown_requested = False
 

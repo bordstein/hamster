@@ -29,11 +29,11 @@ from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
 from qtgui import Ui_MainWindow
 import json
 from whooshresmodel import ResultViewModel
-from moviehamster.util.strings import humanize_mins
+from moviehamster.gui.util.strings import humanize_mins
 from moviehamster.indexer.qindexer import IndexThread
-from moviehamster.util.downloader import DownloadManager
-from moviehamster.util.files import get_user_index, get_user_db
-import moviehamster.util.log as L
+from moviehamster.gui.util.downloader import DownloadManager
+from moviehamster.gui.util.files import get_user_index, get_user_db
+import moviehamster.gui.util.log as L
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
