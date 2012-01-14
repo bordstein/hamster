@@ -28,7 +28,7 @@ import os
 from whoosh.qparser import QueryParser
 from whoosh.index import create_in, open_dir
 from schema import MovieSchema
-from util import normalize
+from util import normalize, convert_person
 
 class HamsterDB(object):
     def __init__(self, index_path, db_path):
@@ -81,8 +81,16 @@ class HamsterDB(object):
                 )
         writer.commit()
 
-    def get_person(self, imdb_id):
-        pass
+    def get_person(self, person_id):
+        doc = self.db.get_doc(person_id)
+        if doc:
+            return json.loads(doc.content)
+        else:
+            imdb_person_id = person_id.strip("person_")
+            imdb_person = self.imdb.get_person(imdb_person_id)
+            person = convert_person(imdb_person)
+            self.db.create_doc(json.dumps(person), doc_id=person_id)
+            return person
 
     def list_all_movies(self):
         num = 0
@@ -106,6 +114,10 @@ class HamsterDB(object):
 
 if __name__ == "__main__":
     db = HamsterDB("/tmp/hamster.idx", "/tmp/hamster.db")
+    person = db.get_person("person_0000136")
+    print person
+    import sys
+    sys.exit()
     movie = db.get_movie("0325980")
     movie = db.get_movie("0168122")
     print "movie"
