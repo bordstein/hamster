@@ -79,12 +79,19 @@ class GUI(QtGui.QMainWindow):
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
-        tv.doubleClicked.connect(self.history.overwrite_entry)
-        tv.doubleClicked.connect(self._do_open_movie)
+        tv.clicked.connect(self._table_clicked)
 
-    def _do_open_movie(self, idx):
-        imdb_id = self.model.getIdForRow(idx.row())
-        self._open_movie(imdb_id)
+    def _table_clicked(self, idx):
+        col = idx.column()
+        row = idx.row()
+        if col == 0:
+            self.history.create_entry(overwrite=True)
+            imdb_id = self.model.getIdForRow(row)
+            self._open_movie(imdb_id)
+        else:
+            pass
+            # TODO
+            # handle star etc.
 
     def _open_movie(self, imdb_id, nohist=False):
         movie = self.db.get_movie(imdb_id)
@@ -282,8 +289,4 @@ class History(object):
         for m,a in self.history:
             L.d(m.func_name + ' ' + a)
         L.d("*" * 78)
-
-    def overwrite_entry(self):
-        print 'called'
-        self.create_entry(overwrite=True)
 
