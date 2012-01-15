@@ -89,7 +89,9 @@ class IndexWriter(QObject):
 
     def index_movie(self, movie, imdb_id):
         self.buffer[imdb_id] = movie
-        url = movie.get('cover url', None)
+        url = movie.get('full-size cover url', None)
+        if not url:
+            url = movie.get('cover url', None)
         if url:
             L.d("downloading cover from %s.." % url)
             self.downloader.download_cover(imdb_id, url)
