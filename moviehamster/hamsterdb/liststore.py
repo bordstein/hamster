@@ -31,8 +31,10 @@ class ListStore(object):
         )
         return _extract_doc_ids(results)
 
-    def create(self, listname):
-        ml = MovieList(self.username, listname)
+    def create(self, name, user=None):
+        if not user:
+            user = self.username
+        ml = MovieList(user, name)
         self.db.create_doc(ml._to_json(), ml.name())
 
     def save(self, ml):
@@ -41,14 +43,25 @@ class ListStore(object):
         else:
             raise Exception("no _doc - did you try to save new movielist?")
 
-    def get(self, name):
-        doc = self.db.get_doc(name)
-
-    def get_user_list(self, name):
-        doc = self.db.get_doc("%s:%s" % (self.username, name))
+    def get_list(self, user, name, failsave=False):
+        listname = "%s:%s" % (user, name)
+        doc = self.db.get_doc(listname)
         if doc:
             ml = movielist_from_doc(doc)
             return ml
+        elif failsave:
+            self.create(name, user)
+            return self.get_list(user, name, failsave=False)
+
+    def get_user_list(self, name, failsave=False):
+        listname = "%s:%s" % (self.username, name)
+        doc = self.db.get_doc(listname)
+        if doc:
+            ml = movielist_from_doc(doc)
+            return ml
+        elif failsave:
+            self.create(name)
+            return self.get_list(listname, failsave=False)
 
 def _extract_doc_ids(doclist):
     retval = []
@@ -67,3 +80,4 @@ if __name__ == "__main__":
     #print ml
     print ls.list_user_lists()
     print ls.list_all_lists()
+    lm = ls.get_list("user2", "sdf", failsave=True)

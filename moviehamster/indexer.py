@@ -88,7 +88,8 @@ class IndexThread (QThread):
         imdb_db = imdb.IMDb()
         tp = QThreadPool.globalInstance()
         writer = IndexWriter(self.user, self.index_path, self.u1db_path)
-        count = 0
+        total_movie_count = 0
+        available_movie_count = 0
 
         it = QDirIterator(self.media_path, QDirIterator.Subdirectories)
         while it.hasNext():
@@ -97,10 +98,11 @@ class IndexThread (QThread):
                 directory = unicode(dir)
                 match = rex.match(directory)
                 if match:
-                    count += 1
+                    total_movie_count += 1
                     imdb_id = match.group(1)
                     already_in_db = db.has_movie(imdb_id)
                     if already_in_db:
+                        available_movie_count += 1
                         L.d("%s already in db - skipping" % imdb_id)
                     else:
                         j = Job(imdb_db, imdb_id, self) 
@@ -109,7 +111,10 @@ class IndexThread (QThread):
                         tp.start(j) 
             except:
                 pass
-        print count
+        L.d("%i/%i movies available" % (available_movie_count, total_movie_count))
+        if available_movie_count == total_movie_count:
+            L.d("all movies are already in sync")
+            self.set_stopped()
         self.exec_()
     
     def set_stopped(self):
