@@ -63,8 +63,8 @@ class GUI(QtGui.QMainWindow):
         #TODO ask username from user?
 
     def _init_shortcuts(self):
-        shortcut = QShortcut(QKeySequence(self.tr("Alt+Left")), self, self._history_back)
-        shortcut = QShortcut(QKeySequence(self.tr("Alt+Right")), self, self._history_forward)
+        shortcut = QShortcut(QKeySequence(self.tr("Alt+Left")), self, self.history.backward)
+        shortcut = QShortcut(QKeySequence(self.tr("Alt+Right")), self, self.history.forward)
 
     def _init_movie_list(self):
         tv = self.ui.movieList
@@ -76,7 +76,7 @@ class GUI(QtGui.QMainWindow):
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
-        tv.doubleClicked.connect(self._save_library_to_history)
+        tv.doubleClicked.connect(self.history.create_entry)
         tv.doubleClicked.connect(self._do_open_movie)
 
     def _do_open_movie(self, idx):
@@ -84,13 +84,6 @@ class GUI(QtGui.QMainWindow):
         self._open_movie(imdb_id)
 
     def _open_movie(self, imdb_id, nohist=False):
-        if not nohist:
-            if self.current < len(self.history) - 1:
-                self.history.insert(self.current, (self._open_movie, imdb_id))
-                self.history = self.history[:self.current + 1]
-            else:
-                self.history.append((self._open_movie, imdb_id))
-                self.current += 1
         movie = self.db.get_movie(imdb_id)
 
         plot_short = movie.get('plot outline', "")
@@ -138,15 +131,8 @@ class GUI(QtGui.QMainWindow):
             self.ui.l_img.setText("-")
 
         self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
-
-
-    def _save_library_to_history(self):
-        if self.current < len(self.history) - 1:
-            self.history.insert(self.current, (self._open_library, self.ui.filter.text()))
-            self.history = self.history[:self.current + 1]
-        else:
-            self.history.append((self._open_library, self.ui.filter.text()))
-            self.current += 1
+        if not nohist:
+            self.history.create_entry(imdb_id)
 
     def _open_person(self, person_id=None, nohist=False):
         if not person_id:
@@ -154,17 +140,12 @@ class GUI(QtGui.QMainWindow):
             # TODO
             # person_id = self.sender().id
         #DOESNT WORK
-        if not nohist:
-            if self.current < len(self.history) - 1:
-                self.history.insert(self.current, (self._open_person, person_id))
-                self.history = self.history[:self.current + 1]
-            else:
-                self.history.append((self._open_person, person_id))
-                self.current += 1
         p = self.db.get_person('person_' + person_id)
         self.ui.l_person_name.setText(p['name'])
         self.ui.person_bio.setText(p['mini biography'][0])
         self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
+        if not nohist:
+            self.history.create_entry(person_id)
 
     def _update_model(self, new_text):
         search_string = str(new_text)
@@ -204,15 +185,6 @@ class GUI(QtGui.QMainWindow):
             refresh_icon.addPixmap(QtGui.QPixmap(":/icons/icons/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.ui.button_sync.setIcon(refresh_icon)
 
-    def _history_back(self):
-        if 0 < self.current < len(self.history):
-            self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
-            self.current -= 1
-
-    def _history_forward(self):
-        if 0 <= self.current < len(self.history) - 1:
-            self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
-            self.current += 1
 
     def closeEvent(self, event):
         L.d("shutdown requested")
@@ -229,16 +201,15 @@ class GUI(QtGui.QMainWindow):
 
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
-        self.history = []
-        self.current = -1
-
-        self._init_shortcuts()
-
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.history = History(self)
+
         self._init_config()
         self._init_db()
         self._init_movie_list()
+
+        self._init_shortcuts()
 
         self.index_thread = None
         self._shutdown_requested = False
@@ -246,8 +217,68 @@ class GUI(QtGui.QMainWindow):
         self.ui.filter.textChanged.connect(self._update_model)
         self.ui.button_sync.clicked.connect(self.sync)
 
-        self.ui.btn_back.clicked.connect(self._history_back)
-        self.ui.btn_forward.clicked.connect(self._history_forward)
+        self.ui.btn_back.clicked.connect(self.history.backward)
+        self.ui.btn_forward.clicked.connect(self.history.forward)
 
         self._open_library('')
+
+class History(object):
+    current = -1
+    history = []
+
+    def __init__(self, gui):
+        self.gui = gui
+
+    def backward(self):
+#        print "BACKWARD"
+#        print self.current
+#        for m,a in self.history:
+#            print m.func_name, a
+#        print "END BACKWARD"
+        if 0 < self.current < len(self.history):
+            self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
+            self.current -= 1
+
+    def forward(self):
+#        print "FORWARD"
+#        print self.current
+#        for m,a in self.history:
+#            print m.func_name, a
+#        print "END FORWARD"
+        if 0 <= self.current < len(self.history) - 1:
+            self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
+            self.current += 1
+
+    def create_entry(self, id=None):
+        L.d("CREATE HISTORY ENTRY")
+        L.d("BEFORE:")
+        L.d("CURRENT: %d" % self.current)
+        for m,a in self.history:
+            L.d(m.func_name + ' ' + a)
+        idx = self.gui.ui.stackedWidget.currentIndex()
+        if idx == 0:
+            view = self.gui._open_library
+            arg = self.gui.ui.filter.text()
+        elif idx == 1:
+            view = self.gui._open_person
+            arg = id
+        elif idx == 2:
+            view = self.gui._open_movie
+            arg = id
+
+        if self.current < len(self.history) - 1:
+            # avoid two history entries in a row
+            if idx is not 0:
+                self.current += 1
+            self.history.insert(self.current, (view, arg))
+            self.history = self.history[:self.current + 1]
+        else:
+            self.current += 1
+            self.history.append((view, arg))
+
+        L.d("AFTER:")
+        L.d("CURRENT: %d" % self.current)
+        for m,a in self.history:
+            L.d(m.func_name + ' ' + a)
+        L.d("*" * 78)
 
