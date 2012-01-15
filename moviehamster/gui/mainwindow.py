@@ -78,14 +78,21 @@ class GUI(QtGui.QMainWindow):
         tv.resizeColumnsToContents()
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
-        tv.setSelectionBehavior(QAbstractItemView.SelectRows)
         tv.verticalHeader().setDefaultSectionSize(24)
-        tv.doubleClicked.connect(self.history.overwrite_entry)
-        tv.doubleClicked.connect(self._do_open_movie)
+        tv.setSelectionBehavior(QAbstractItemView.SelectRows)
+        tv.clicked.connect(self._table_clicked)
 
-    def _do_open_movie(self, idx):
-        imdb_id = self.model.getIdForRow(idx.row())
-        self._open_movie(imdb_id)
+    def _table_clicked(self, idx):
+        col = idx.column()
+        row = idx.row()
+        if col == 0:
+            self.history.create_entry(overwrite=True)
+            imdb_id = self.model.getIdForRow(row)
+            self._open_movie(imdb_id)
+        else:
+            pass
+            # TODO
+            # handle star etc.
 
     def _open_movie(self, imdb_id, nohist=False):
         movie = self.db.get_movie(imdb_id)
