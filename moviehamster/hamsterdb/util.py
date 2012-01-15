@@ -71,9 +71,9 @@ def _dictify(obj):
 
 def convert_person(imdb_person):
     person = {}
-    person['name'] = imdb_person['name']
-    person['headshot'] = imdb_person['headshot']
-    person['mini biography'] = imdb_person['mini biography']
+    person['name'] = imdb_person.get('name', '')
+    person['headshot'] = imdb_person.get('headshot', '')
+    person['mini biography'] = imdb_person.get('mini biography', '')
     person['actor'] = _get_movie_ids_for_person(imdb_person, "actor")
     person['director'] = _get_movie_ids_for_person(imdb_person, "director")
     person['producer'] = _get_movie_ids_for_person(imdb_person, "producer")
