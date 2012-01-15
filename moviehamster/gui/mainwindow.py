@@ -25,6 +25,7 @@
 
 from PySide import QtGui
 import os
+from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
 from moviehamster.gui.util import humanize_mins
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence
@@ -123,7 +124,6 @@ class GUI(QtGui.QMainWindow):
             # TODO
             # actor_button.id = actor['id']
             self.ui.box_cast.addWidget(actor_button)
-        self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
         self.ui.l_title.setText(title)
         self.ui.l_plot_short_3.setText(plot_short)
         self.ui.l_plot_3.setText(plot)
@@ -137,6 +137,8 @@ class GUI(QtGui.QMainWindow):
         else:
             self.ui.l_img.setText("-")
 
+        self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
+
 
     def _save_library_to_history(self):
         if self.current < len(self.history) - 1:
@@ -146,10 +148,23 @@ class GUI(QtGui.QMainWindow):
             self.history.append((self._open_library, self.ui.filter.text()))
             self.current += 1
 
-    def _open_person(self):
-        pass
-        # TODO
-        # person_id = self.sender().id
+    def _open_person(self, person_id=None, nohist=False):
+        if not person_id:
+            person_id = '0000136'
+            # TODO
+            # person_id = self.sender().id
+        #DOESNT WORK
+        if not nohist:
+            if self.current < len(self.history) - 1:
+                self.history.insert(self.current, (self._open_person, person_id))
+                self.history = self.history[:self.current + 1]
+            else:
+                self.history.append((self._open_person, person_id))
+                self.current += 1
+        p = self.db.get_person('person_' + person_id)
+        self.ui.l_person_name.setText(p['name'])
+        self.ui.person_bio.setText(p['mini biography'][0])
+        self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
 
     def _update_model(self, new_text):
         search_string = str(new_text)
@@ -163,7 +178,9 @@ class GUI(QtGui.QMainWindow):
         if self.index_thread and self.index_thread.isRunning():
             self.index_thread.set_stopped()
         else:
-            self.ui.button_sync.setText("Stop")
+            stop_icon = QtGui.QIcon()
+            stop_icon.addPixmap(QtGui.QPixmap(":/icons/icons/process-stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.ui.button_sync.setIcon(stop_icon)
             movie_dir = self.settings.value("movie_dir")
             self.index_thread = IndexThread(movie_dir, self.user,
                     self.index_path, self.db_path)
@@ -183,7 +200,9 @@ class GUI(QtGui.QMainWindow):
         if self._shutdown_requested:
             self.close()
         else:
-            self.ui.button_sync.setText("Sync")
+            refresh_icon = QtGui.QIcon()
+            refresh_icon.addPixmap(QtGui.QPixmap(":/icons/icons/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.ui.button_sync.setIcon(refresh_icon)
 
     def _history_back(self):
         if 0 < self.current < len(self.history):

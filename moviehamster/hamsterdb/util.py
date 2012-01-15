@@ -60,6 +60,7 @@ def _dictify(obj):
 def convert_person(imdb_person):
     person = {}
     person['name'] = imdb_person['name']
+    print person['name']
     person['headshot'] = imdb_person['headshot']
     person['mini biography'] = imdb_person['mini biography']
     person['actor'] = _get_movie_ids_for_person(imdb_person, "actor")

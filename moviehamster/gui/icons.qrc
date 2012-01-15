@@ -1,6 +1,11 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/view-refresh.png</file>
+    <file>icons/go-next.png</file>
+    <file>icons/go-previous.png</file>
     <file>icons/draw-triangle3.png</file>
+    <file>icons/process-stop.png</file>
+    <file>icons/preferences-system.png</file>
     <file>icons/draw-triangle4.png</file>
   </qresource>
 </RCC>

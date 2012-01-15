@@ -99,6 +99,7 @@ class HamsterDB(object):
             return json.loads(doc.content)
         else:
             imdb_person_id = person_id.strip("person_")
+            print imdb_person_id
             imdb_person = self.imdb.get_person(imdb_person_id)
             person = convert_person(imdb_person)
             self.db.create_doc(json.dumps(person), doc_id=person_id)
