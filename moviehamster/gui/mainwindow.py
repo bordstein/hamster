@@ -25,10 +25,9 @@
 
 from PySide import QtGui
 import os
-from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
 from moviehamster.gui.util import humanize_mins
-from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
+from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
@@ -61,6 +60,10 @@ class GUI(QtGui.QMainWindow):
         self.user = os.environ['USERNAME']
         self.db = HamsterDB(self.user, self.index_path, self.db_path)
         #TODO ask username from user?
+
+    def _init_shortcuts(self):
+        shortcut = QShortcut(QKeySequence(self.tr("Alt+Left")), self, self._history_back)
+        shortcut = QShortcut(QKeySequence(self.tr("Alt+Right")), self, self._history_forward)
 
     def _init_movie_list(self):
         tv = self.ui.movieList
@@ -206,10 +209,12 @@ class GUI(QtGui.QMainWindow):
             event.accept()
 
     def __init__(self, parent=None):
+        QtGui.QMainWindow.__init__(self, parent)
         self.history = []
         self.current = -1
 
-        QtGui.QMainWindow.__init__(self, parent)
+        self._init_shortcuts()
+
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self._init_config()
