@@ -18,7 +18,7 @@
     <item row="0" column="1">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="library_view">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -53,6 +53,38 @@
         </item>
         <item>
          <widget class="QTableView" name="movieList"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="person_view">
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="l_headshot">
+          <property name="text">
+           <string>HEADSHOT</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="l_person_name">
+          <property name="text">
+           <string>NAME</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QTextEdit" name="person_bio">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>OTHER STUFF</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -437,7 +469,7 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>131</width>
+             <width>335</width>
              <height>76</height>
             </rect>
            </property>
@@ -469,14 +501,22 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QPushButton" name="btn_back">
          <property name="text">
-          <string>Back</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/icons/go-previous.png</normaloff>:/icons/icons/go-previous.png</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btn_forward">
          <property name="text">
-          <string>Forward</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/icons/go-next.png</normaloff>:/icons/icons/go-next.png</iconset>
          </property>
         </widget>
        </item>
@@ -496,18 +536,33 @@ p, li { white-space: pre-wrap; }
        <item>
         <widget class="QPushButton" name="button_sync">
          <property name="text">
-          <string>Sync</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/icons/view-refresh.png</normaloff>:/icons/icons/view-refresh.png</iconset>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton">
          <property name="text">
-          <string>settings</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/icons/icons/preferences-system.png</normaloff>:/icons/icons/preferences-system.png</iconset>
          </property>
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_library">
+       <property name="text">
+        <string>Library</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QListView" name="listView"/>

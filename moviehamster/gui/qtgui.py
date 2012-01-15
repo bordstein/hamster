@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
+# Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Sun Jan 15 12:22:22 2012
-#      by: pyside-uic 0.2.11 running on PySide 1.0.6
+# Created: Sun Jan 15 18:11:48 2012
+#      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -47,6 +47,24 @@ class Ui_MainWindow(object):
         self.movieList.setObjectName("movieList")
         self.verticalLayout.addWidget(self.movieList)
         self.stackedWidget.addWidget(self.library_view)
+        self.person_view = QtGui.QWidget()
+        self.person_view.setObjectName("person_view")
+        self.gridLayout_3 = QtGui.QGridLayout(self.person_view)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.l_headshot = QtGui.QLabel(self.person_view)
+        self.l_headshot.setObjectName("l_headshot")
+        self.gridLayout_3.addWidget(self.l_headshot, 0, 0, 1, 1)
+        self.l_person_name = QtGui.QLabel(self.person_view)
+        self.l_person_name.setObjectName("l_person_name")
+        self.gridLayout_3.addWidget(self.l_person_name, 0, 1, 1, 1)
+        self.person_bio = QtGui.QTextEdit(self.person_view)
+        self.person_bio.setReadOnly(True)
+        self.person_bio.setObjectName("person_bio")
+        self.gridLayout_3.addWidget(self.person_bio, 1, 1, 1, 1)
+        self.groupBox = QtGui.QGroupBox(self.person_view)
+        self.groupBox.setObjectName("groupBox")
+        self.gridLayout_3.addWidget(self.groupBox, 2, 1, 1, 1)
+        self.stackedWidget.addWidget(self.person_view)
         self.movie_view = QtGui.QWidget()
         self.movie_view.setObjectName("movie_view")
         self.gridLayout_2 = QtGui.QGridLayout(self.movie_view)
@@ -227,7 +245,7 @@ class Ui_MainWindow(object):
         self.scrollable_box_cast.setWidgetResizable(True)
         self.scrollable_box_cast.setObjectName("scrollable_box_cast")
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 131, 76))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 335, 76))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.box_cast = QtGui.QHBoxLayout(self.scrollAreaWidgetContents)
         self.box_cast.setContentsMargins(3, 3, 3, 3)
@@ -247,20 +265,39 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.btn_back = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_back.setText("")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/icons/icons/go-previous.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_back.setIcon(icon2)
         self.btn_back.setObjectName("btn_back")
         self.horizontalLayout.addWidget(self.btn_back)
         self.btn_forward = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_forward.setText("")
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/icons/icons/go-next.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btn_forward.setIcon(icon3)
         self.btn_forward.setObjectName("btn_forward")
         self.horizontalLayout.addWidget(self.btn_forward)
         spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
         self.button_sync = QtGui.QPushButton(self.dockWidgetContents)
+        self.button_sync.setText("")
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap(":/icons/icons/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.button_sync.setIcon(icon4)
         self.button_sync.setObjectName("button_sync")
         self.horizontalLayout.addWidget(self.button_sync)
         self.pushButton = QtGui.QPushButton(self.dockWidgetContents)
+        self.pushButton.setText("")
+        icon5 = QtGui.QIcon()
+        icon5.addPixmap(QtGui.QPixmap(":/icons/icons/preferences-system.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton.setIcon(icon5)
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.btn_library = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_library.setObjectName("btn_library")
+        self.verticalLayout_2.addWidget(self.btn_library)
         self.listView = QtGui.QListView(self.dockWidgetContents)
         self.listView.setObjectName("listView")
         self.verticalLayout_2.addWidget(self.listView)
@@ -268,7 +305,7 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -276,6 +313,9 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox.setText(QtGui.QApplication.translate("MainWindow", "director", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_2.setText(QtGui.QApplication.translate("MainWindow", "actor", None, QtGui.QApplication.UnicodeUTF8))
+        self.l_headshot.setText(QtGui.QApplication.translate("MainWindow", "HEADSHOT", None, QtGui.QApplication.UnicodeUTF8))
+        self.l_person_name.setText(QtGui.QApplication.translate("MainWindow", "NAME", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox.setTitle(QtGui.QApplication.translate("MainWindow", "OTHER STUFF", None, QtGui.QApplication.UnicodeUTF8))
         self.l_title.setText(QtGui.QApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -312,9 +352,6 @@ class Ui_MainWindow(object):
         self.pushButton_8.setText(QtGui.QApplication.translate("MainWindow", "View later", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_9.setText(QtGui.QApplication.translate("MainWindow", "Annex fetch", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_10.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_back.setText(QtGui.QApplication.translate("MainWindow", "Back", None, QtGui.QApplication.UnicodeUTF8))
-        self.btn_forward.setText(QtGui.QApplication.translate("MainWindow", "Forward", None, QtGui.QApplication.UnicodeUTF8))
-        self.button_sync.setText(QtGui.QApplication.translate("MainWindow", "Sync", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton.setText(QtGui.QApplication.translate("MainWindow", "settings", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_library.setText(QtGui.QApplication.translate("MainWindow", "Library", None, QtGui.QApplication.UnicodeUTF8))
 
 import icons_rc

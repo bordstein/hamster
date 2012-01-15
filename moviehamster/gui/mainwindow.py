@@ -28,7 +28,7 @@ import os
 from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
 from moviehamster.gui.util import humanize_mins
-from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
+from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
@@ -63,6 +63,10 @@ class GUI(QtGui.QMainWindow):
         self.db = HamsterDB(self.user, self.index_path, self.db_path)
         #TODO ask username from user?
 
+    def _init_shortcuts(self):
+        shortcut = QShortcut(QKeySequence(self.tr("Alt+Left")), self, self.history.backward)
+        shortcut = QShortcut(QKeySequence(self.tr("Alt+Right")), self, self.history.forward)
+
     def _init_movie_list(self):
         tv = self.ui.movieList
         tv.setShowGrid(False)
@@ -75,14 +79,14 @@ class GUI(QtGui.QMainWindow):
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
-        tv.doubleClicked.connect(self._save_library_to_history)
-        tv.doubleClicked.connect(self._open_movie)
+        tv.doubleClicked.connect(self.history.overwrite_entry)
+        tv.doubleClicked.connect(self._do_open_movie)
 
-    def _open_movie(self, idx, nohist=False):
+    def _do_open_movie(self, idx):
         imdb_id = self.model.getIdForRow(idx.row())
-        if not nohist:
-            self.history.append((self._open_movie, idx))
-            self.current += 1
+        self._open_movie(imdb_id)
+
+    def _open_movie(self, imdb_id, nohist=False):
         movie = self.db.get_movie(imdb_id)
 
         plot_short = movie.get('plot outline', "")
@@ -116,7 +120,6 @@ class GUI(QtGui.QMainWindow):
             # TODO
             # actor_button.id = actor['id']
             self.ui.box_cast.addWidget(actor_button)
-        self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
         self.ui.l_title.setText(title)
         self.ui.l_plot_short_3.setText(plot_short)
         self.ui.l_plot_3.setText(plot)
@@ -130,15 +133,22 @@ class GUI(QtGui.QMainWindow):
         else:
             self.ui.l_img.setText("-")
 
+        self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
+        if not nohist:
+            self.history.create_entry(imdb_id)
 
-    def _save_library_to_history(self):
-        self.history.append((self._open_library, self.ui.filter.text()))
-        self.current += 1
-
-    def _open_person(self):
-        pass
-        # TODO
-        # person_id = self.sender().id
+    def _open_person(self, person_id=None, nohist=False):
+        if not person_id:
+            person_id = '0000136'
+            # TODO
+            # person_id = self.sender().id
+        #DOESNT WORK
+        p = self.db.get_person('person_' + person_id)
+        self.ui.l_person_name.setText(p['name'])
+        self.ui.person_bio.setText(p['mini biography'][0])
+        self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
+        if not nohist:
+            self.history.create_entry(person_id)
 
     def _update_model(self, new_text):
         search_string = str(new_text)
@@ -152,7 +162,9 @@ class GUI(QtGui.QMainWindow):
         if self.index_thread and self.index_thread.isRunning():
             self.index_thread.set_stopped()
         else:
-            self.ui.button_sync.setText("Stop")
+            stop_icon = QtGui.QIcon()
+            stop_icon.addPixmap(QtGui.QPixmap(":/icons/icons/process-stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.ui.button_sync.setIcon(stop_icon)
             movie_dir = self.settings.value("movie_dir")
             self.index_thread = IndexThread(movie_dir, self.user,
                     self.index_path, self.db_path)
@@ -162,31 +174,24 @@ class GUI(QtGui.QMainWindow):
             self.index_thread.start()
             L.d("syncer started")
 
-    def _open_library(self, filter, nohist=False):
-        self.ui.filter.setText(filter)
-        self._update_model(filter)
+    def _open_library(self, filter=None, nohist=False):
+        self.ui.filter.clear()
+        if filter:
+            self.ui.filter.setText(filter)
+            self._update_model(filter)
         self.ui.stackedWidget.setCurrentWidget(self.ui.library_view)
+        if not nohist:
+            self.history.create_entry()
 
     def _indexer_closed(self):
         L.d("indexer finished")
         if self._shutdown_requested:
             self.close()
         else:
-            self.ui.button_sync.setText("Sync")
+            refresh_icon = QtGui.QIcon()
+            refresh_icon.addPixmap(QtGui.QPixmap(":/icons/icons/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.ui.button_sync.setIcon(refresh_icon)
 
-    def _history_back(self):
-        print self.history
-        print self.current
-        if 0 < self.current < len(self.history):
-            self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
-            self.current -= 1
-
-    def _history_forward(self):
-        print self.history
-        print self.current
-        if 0 <= self.current < len(self.history) - 1:
-            self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
-            self.current += 1
 
     def closeEvent(self, event):
         L.d("shutdown requested")
@@ -202,15 +207,16 @@ class GUI(QtGui.QMainWindow):
             event.accept()
 
     def __init__(self, parent=None):
-        self.history = []
-        self.current = -1
-
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.history = History(self)
+
         self._init_config()
         self._init_db()
         self._init_movie_list()
+
+        self._init_shortcuts()
 
         self.index_thread = None
         self._shutdown_requested = False
@@ -218,8 +224,66 @@ class GUI(QtGui.QMainWindow):
         self.ui.filter.textChanged.connect(self._update_model)
         self.ui.button_sync.clicked.connect(self.sync)
 
-        self.ui.btn_back.clicked.connect(self._history_back)
-        self.ui.btn_forward.clicked.connect(self._history_forward)
+        self.ui.btn_back.clicked.connect(self.history.backward)
+        self.ui.btn_forward.clicked.connect(self.history.forward)
+        self.ui.btn_library.clicked.connect(self._open_library)
 
-        self._open_library('')
+        self._open_library()
+
+class History(object):
+    current = -1
+    history = []
+
+    def __init__(self, gui):
+        self.gui = gui
+
+    def backward(self):
+        if 0 < self.current < len(self.history):
+            self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
+            self.current -= 1
+
+    def forward(self):
+        if 0 <= self.current < len(self.history) - 1:
+            self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
+            self.current += 1
+
+    def create_entry(self, id=None, overwrite=False):
+        L.d("CREATE HISTORY ENTRY")
+        L.d("BEFORE:")
+        L.d("CURRENT: %d" % self.current)
+        for m,a in self.history:
+            L.d(m.func_name + ' ' + a)
+        idx = self.gui.ui.stackedWidget.currentIndex()
+        if idx == 0:
+            view = self.gui._open_library
+            arg = self.gui.ui.filter.text()
+        elif idx == 1:
+            view = self.gui._open_person
+            arg = id
+        elif idx == 2:
+            view = self.gui._open_movie
+            arg = id
+
+        if self.current < len(self.history) - 1:
+            # avoid two library entries in a row
+            if not overwrite:
+                self.current += 1
+            self.history.insert(self.current, (view, arg))
+            self.history = self.history[:self.current + 1]
+        else:
+            if overwrite:
+                self.history.pop(self.current)
+            else:
+                self.current += 1
+            self.history.append((view, arg))
+
+        L.d("AFTER:")
+        L.d("CURRENT: %d" % self.current)
+        for m,a in self.history:
+            L.d(m.func_name + ' ' + a)
+        L.d("*" * 78)
+
+    def overwrite_entry(self):
+        print 'called'
+        self.create_entry(overwrite=True)
 
