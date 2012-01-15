@@ -121,11 +121,17 @@ class GUI(QtGui.QMainWindow):
         self.ui.l_length.setText(runtime)
         self.ui.l_genres.setText(', '.join(genres))
         self.ui.l_countries.setText(', '.join(countries))
+        while 1:
+            w = self.ui.box_cast.takeAt(0)
+            if w:
+                widget=w.widget()
+                widget.deleteLater()
+            else:
+                break
         for actor in cast:
             actor_button = QPushButton(actor['name'])
             actor_button.clicked.connect(self._open_person)
-            # TODO
-            # actor_button.id = actor['id']
+            actor_button.id = actor['person_id']
             self.ui.box_cast.addWidget(actor_button)
         self.ui.l_title.setText(title)
         self.ui.l_plot_short_3.setText(plot_short)
@@ -146,10 +152,7 @@ class GUI(QtGui.QMainWindow):
 
     def _open_person(self, person_id=None, nohist=False):
         if not person_id:
-            person_id = '0000136'
-            # TODO
-            # person_id = self.sender().id
-        #DOESNT WORK
+            person_id = self.sender().id
         p = self.db.get_person('person_' + person_id)
         self.ui.l_person_name.setText(p['name'])
         self.ui.person_bio.setText(p['mini biography'][0])
