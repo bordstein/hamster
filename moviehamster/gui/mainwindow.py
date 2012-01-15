@@ -73,13 +73,23 @@ class GUI(QtGui.QMainWindow):
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
         tv.doubleClicked.connect(self._save_library_to_history)
-        tv.doubleClicked.connect(self._open_movie)
+        tv.doubleClicked.connect(self._do_open_movie)
 
-    def _open_movie(self, idx, nohist=False):
+    def _do_open_movie(self, idx):
         imdb_id = self.model.getIdForRow(idx.row())
+        self._open_movie(imdb_id)
+
+    def _open_movie(self, imdb_id, nohist=False):
         if not nohist:
-            self.history.append((self._open_movie, idx))
-            self.current += 1
+            if self.current < len(self.history) - 1:
+                self.history.insert(self.current, (self._open_movie, imdb_id))
+                self.history = self.history[:self.current + 1]
+            else:
+                self.history.append((self._open_movie, imdb_id))
+                self.current += 1
+            print self.current
+            pprint(self.history)
+            print '*' * 78
         movie = self.db.get_movie(imdb_id)
 
         plot_short = movie.get('plot outline', "")
@@ -120,8 +130,17 @@ class GUI(QtGui.QMainWindow):
         self.ui.l_rating.setText(rating)
 
     def _save_library_to_history(self):
-        self.history.append((self._open_library, self.ui.filter.text()))
-        self.current += 1
+        if self.current < len(self.history) - 1:
+            print 'bin hier 1'
+            self.history.insert(self.current, (self._open_library, self.ui.filter.text()))
+            self.history = self.history[:self.current + 1]
+        else:
+            print 'bin hier 2'
+            self.history.append((self._open_library, self.ui.filter.text()))
+            self.current += 1
+        print self.current
+        pprint(self.history)
+        print '*' * 78
 
     def _open_person(self):
         pass
@@ -163,15 +182,13 @@ class GUI(QtGui.QMainWindow):
             self.ui.button_sync.setText("Sync")
 
     def _history_back(self):
-        print self.history
-        print self.current
+        print '_history_back: %d' % self.current
         if 0 < self.current < len(self.history):
             self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
             self.current -= 1
 
     def _history_forward(self):
-        print self.history
-        print self.current
+        print '_history_forward: %d' % self.current
         if 0 <= self.current < len(self.history) - 1:
             self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
             self.current += 1
