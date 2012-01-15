@@ -81,27 +81,27 @@ p, li { white-space: pre-wrap; }
         <item row="1" column="0" rowspan="5">
          <widget class="QLabel" name="l_img">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
           <property name="minimumSize">
            <size>
-            <width>140</width>
-            <height>0</height>
+            <width>200</width>
+            <height>300</height>
            </size>
           </property>
           <property name="maximumSize">
            <size>
-            <width>16777215</width>
-            <height>16777215</height>
+            <width>200</width>
+            <height>300</height>
            </size>
           </property>
           <property name="baseSize">
            <size>
-            <width>0</width>
-            <height>0</height>
+            <width>200</width>
+            <height>300</height>
            </size>
           </property>
           <property name="frameShape">
@@ -111,7 +111,7 @@ p, li { white-space: pre-wrap; }
            <string>-</string>
           </property>
           <property name="scaledContents">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -123,6 +123,12 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="1" column="1">
          <widget class="QLabel" name="label">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Director:</string>
           </property>
@@ -153,6 +159,12 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="2" column="1">
          <widget class="QLabel" name="label_9">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Length:</string>
           </property>
@@ -160,6 +172,12 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="3" column="1">
          <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string>Countries:</string>
           </property>
@@ -213,6 +231,9 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="6" column="3">
          <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="sizeConstraint">
+           <enum>QLayout::SetMaximumSize</enum>
+          </property>
           <item>
            <spacer name="verticalSpacer_3">
             <property name="orientation">
@@ -363,6 +384,12 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="2" column="2">
          <widget class="QLabel" name="l_length">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -370,6 +397,12 @@ p, li { white-space: pre-wrap; }
         </item>
         <item row="3" column="2">
          <widget class="QLabel" name="l_countries">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -378,7 +411,7 @@ p, li { white-space: pre-wrap; }
         <item row="4" column="2">
          <widget class="QLabel" name="l_genres">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -391,7 +424,7 @@ p, li { white-space: pre-wrap; }
         <item row="5" column="2">
          <widget class="QScrollArea" name="scrollable_box_cast">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -404,7 +437,7 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>209</width>
+             <width>131</width>
              <height>76</height>
             </rect>
            </property>

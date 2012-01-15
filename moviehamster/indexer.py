@@ -30,6 +30,7 @@ import imdb
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
+from downloader import DownloadManager
 import moviehamster.log as L
 import signal
 
@@ -67,9 +68,35 @@ class IndexWriter(QObject):
     def __init__(self, user, index_path, u1db_path):
         QObject.__init__(self)
         self.db = HamsterDB(user, index_path, u1db_path)
-    def index_movie(self, movie, imdb_id):
+        self.buffer = {}
+        self.downloader = DownloadManager()
+        self.downloader.dl_finished.connect(self._download_success)
+        self.downloader.dl_failed.connect(self._download_failed)
+
+    def _save_to_db(self, imdb_id):
+        movie = self.buffer.pop(imdb_id)
         self.db.save_movie(movie, imdb_id)
         L.d("%s finished" % movie['title'])
+
+    def _download_success(self, imdb_id, base64_image):
+        movie = self.buffer[imdb_id]
+        movie['_cover_'] = base64_image
+        self._save_to_db(imdb_id)
+
+    def _download_failed(self, imdb_id):
+        L.w("downloading cover for %s failed" % imdb_id)
+        self._save_to_db(imdb_id)
+
+    def index_movie(self, movie, imdb_id):
+        self.buffer[imdb_id] = movie
+        url = movie.get('full-size cover url', None)
+        if not url:
+            url = movie.get('cover url', None)
+        if url:
+            L.d("downloading cover from %s.." % url)
+            self.downloader.download_cover(imdb_id, url)
+        else:
+            self._save_to_db(imdb_id)
 
 class IndexThread (QThread):
     def __init__ (self, media_path, user, index_path, u1db_path, parent = None):
