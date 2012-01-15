@@ -76,7 +76,7 @@ class GUI(QtGui.QMainWindow):
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
-        tv.doubleClicked.connect(self.history.create_entry)
+        tv.doubleClicked.connect(self.history.overwrite_entry)
         tv.doubleClicked.connect(self._do_open_movie)
 
     def _do_open_movie(self, idx):
@@ -171,10 +171,14 @@ class GUI(QtGui.QMainWindow):
             self.index_thread.start()
             L.d("syncer started")
 
-    def _open_library(self, filter, nohist=False):
-        self.ui.filter.setText(filter)
-        self._update_model(filter)
+    def _open_library(self, filter=None, nohist=False):
+        self.ui.filter.clear()
+        if filter:
+            self.ui.filter.setText(filter)
+            self._update_model(filter)
         self.ui.stackedWidget.setCurrentWidget(self.ui.library_view)
+        if not nohist:
+            self.history.create_entry()
 
     def _indexer_closed(self):
         L.d("indexer finished")
@@ -219,8 +223,9 @@ class GUI(QtGui.QMainWindow):
 
         self.ui.btn_back.clicked.connect(self.history.backward)
         self.ui.btn_forward.clicked.connect(self.history.forward)
+        self.ui.btn_library.clicked.connect(self._open_library)
 
-        self._open_library('')
+        self._open_library()
 
 class History(object):
     current = -1
@@ -249,7 +254,7 @@ class History(object):
             self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
             self.current += 1
 
-    def create_entry(self, id=None):
+    def create_entry(self, id=None, overwrite=False):
         L.d("CREATE HISTORY ENTRY")
         L.d("BEFORE:")
         L.d("CURRENT: %d" % self.current)
@@ -268,12 +273,15 @@ class History(object):
 
         if self.current < len(self.history) - 1:
             # avoid two library entries in a row
-            if idx is not 0:
+            if not overwrite:
                 self.current += 1
             self.history.insert(self.current, (view, arg))
             self.history = self.history[:self.current + 1]
         else:
-            self.current += 1
+            if overwrite:
+                self.history.pop(self.current)
+            else:
+                self.current += 1
             self.history.append((view, arg))
 
         L.d("AFTER:")
@@ -281,4 +289,8 @@ class History(object):
         for m,a in self.history:
             L.d(m.func_name + ' ' + a)
         L.d("*" * 78)
+
+    def overwrite_entry(self):
+        print 'called'
+        self.create_entry(overwrite=True)
 

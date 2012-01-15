@@ -18,7 +18,7 @@
     <item row="0" column="1">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="library_view">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -469,7 +469,7 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>149</width>
+             <width>335</width>
              <height>76</height>
             </rect>
            </property>
@@ -556,6 +556,13 @@ p, li { white-space: pre-wrap; }
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btn_library">
+       <property name="text">
+        <string>Library</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QListView" name="listView"/>

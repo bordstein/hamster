@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Sun Jan 15 16:44:08 2012
+# Created: Sun Jan 15 18:11:48 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -245,7 +245,7 @@ class Ui_MainWindow(object):
         self.scrollable_box_cast.setWidgetResizable(True)
         self.scrollable_box_cast.setObjectName("scrollable_box_cast")
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 149, 76))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 335, 76))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.box_cast = QtGui.QHBoxLayout(self.scrollAreaWidgetContents)
         self.box_cast.setContentsMargins(3, 3, 3, 3)
@@ -295,6 +295,9 @@ class Ui_MainWindow(object):
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
+        self.btn_library = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_library.setObjectName("btn_library")
+        self.verticalLayout_2.addWidget(self.btn_library)
         self.listView = QtGui.QListView(self.dockWidgetContents)
         self.listView.setObjectName("listView")
         self.verticalLayout_2.addWidget(self.listView)
@@ -302,7 +305,7 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -349,5 +352,6 @@ class Ui_MainWindow(object):
         self.pushButton_8.setText(QtGui.QApplication.translate("MainWindow", "View later", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_9.setText(QtGui.QApplication.translate("MainWindow", "Annex fetch", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_10.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_library.setText(QtGui.QApplication.translate("MainWindow", "Library", None, QtGui.QApplication.UnicodeUTF8))
 
 import icons_rc
