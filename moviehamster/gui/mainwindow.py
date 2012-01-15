@@ -235,21 +235,11 @@ class History(object):
         self.gui = gui
 
     def backward(self):
-#        print "BACKWARD"
-#        print self.current
-#        for m,a in self.history:
-#            print m.func_name, a
-#        print "END BACKWARD"
         if 0 < self.current < len(self.history):
             self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
             self.current -= 1
 
     def forward(self):
-#        print "FORWARD"
-#        print self.current
-#        for m,a in self.history:
-#            print m.func_name, a
-#        print "END FORWARD"
         if 0 <= self.current < len(self.history) - 1:
             self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
             self.current += 1
