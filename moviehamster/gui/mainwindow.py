@@ -74,11 +74,12 @@ class GUI(QtGui.QMainWindow):
         self.model = ResultViewModel(results, tv)
         tv.setModel(self.model)
         tv.setMouseTracking(True)
-        tv.setItemDelegate(HamsterDelegate())
+        tv.setItemDelegate(HamsterDelegate(tv))
         tv.resizeColumnsToContents()
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
+        tv.verticalHeader().setDefaultSectionSize(24)
         tv.doubleClicked.connect(self.history.overwrite_entry)
         tv.doubleClicked.connect(self._do_open_movie)
 
