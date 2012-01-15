@@ -38,7 +38,19 @@ def normalize(obj):
     elif isinstance(obj, imdb.Movie.Movie):
         return _dictify(obj)
     elif isinstance(obj, imdb.Person.Person):
-        return _dictify(obj)
+        pers = {}
+        pers['name'] = obj['name']
+        pers['person_id'] = "person_%s" % obj.getID()
+        if isinstance(obj.currentRole, imdb.Character.Character):
+            if 'name' in obj.currentRole.keys():
+                pers['role'] = obj.currentRole['name']
+        elif isinstance(obj.currentRole, imdb.utils.RolesList):
+            tmpList = []
+            for role in obj.currentRole:
+                if 'name' in role.keys():
+                    tmpList.append(role['name'])
+            pers['role'] = tmpList
+        return pers
     elif isinstance(obj, imdb.Company.Company):
         return _dictify(obj)
     else:
@@ -60,7 +72,6 @@ def _dictify(obj):
 def convert_person(imdb_person):
     person = {}
     person['name'] = imdb_person['name']
-    print person['name']
     person['headshot'] = imdb_person['headshot']
     person['mini biography'] = imdb_person['mini biography']
     person['actor'] = _get_movie_ids_for_person(imdb_person, "actor")
