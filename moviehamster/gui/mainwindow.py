@@ -34,6 +34,7 @@ from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
 from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
+from hamsterdelegate import HamsterDelegate
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -68,6 +69,8 @@ class GUI(QtGui.QMainWindow):
         results = self.db.list_all_movies()
         self.model = ResultViewModel(results, tv)
         tv.setModel(self.model)
+        tv.setMouseTracking(True)
+        tv.setItemDelegate(HamsterDelegate())
         tv.resizeColumnsToContents()
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
