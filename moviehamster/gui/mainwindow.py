@@ -87,9 +87,6 @@ class GUI(QtGui.QMainWindow):
             else:
                 self.history.append((self._open_movie, imdb_id))
                 self.current += 1
-            print self.current
-            pprint(self.history)
-            print '*' * 78
         movie = self.db.get_movie(imdb_id)
 
         plot_short = movie.get('plot outline', "")
@@ -140,16 +137,11 @@ class GUI(QtGui.QMainWindow):
 
     def _save_library_to_history(self):
         if self.current < len(self.history) - 1:
-            print 'bin hier 1'
             self.history.insert(self.current, (self._open_library, self.ui.filter.text()))
             self.history = self.history[:self.current + 1]
         else:
-            print 'bin hier 2'
             self.history.append((self._open_library, self.ui.filter.text()))
             self.current += 1
-        print self.current
-        pprint(self.history)
-        print '*' * 78
 
     def _open_person(self):
         pass
@@ -191,13 +183,11 @@ class GUI(QtGui.QMainWindow):
             self.ui.button_sync.setText("Sync")
 
     def _history_back(self):
-        print '_history_back: %d' % self.current
         if 0 < self.current < len(self.history):
             self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
             self.current -= 1
 
     def _history_forward(self):
-        print '_history_forward: %d' % self.current
         if 0 <= self.current < len(self.history) - 1:
             self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
             self.current += 1
