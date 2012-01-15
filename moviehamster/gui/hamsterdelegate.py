@@ -8,13 +8,13 @@ class HamsterDelegate(QStyledItemDelegate):
         value = index.data()
 
         if index.column() == 3:
-            pixmap =  QPixmap(":/icons/icons/bookmark.png");
+            pixmap =  QPixmap(":/icons/icons/emblem-favorite.png");
             option.rect.setRight(option.rect.left()+28)
             option.rect.setHeight(28)
             painter.drawPixmap(option.rect, pixmap)
 
         elif index.column() == 4:
-            pixmap =  QPixmap(":/icons/icons/emblem-favorite.png");
+            pixmap =  QPixmap(":/icons/icons/bookmark.png");
             option.rect.setRight(option.rect.left()+28)
             option.rect.setHeight(28)
             painter.drawPixmap(option.rect, pixmap)
