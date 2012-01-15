@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Sun Jan 15 00:10:41 2012
+# Created: Sun Jan 15 01:26:46 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -201,7 +201,7 @@ class Ui_MainWindow(object):
         self.scrollable_box_cast.setWidgetResizable(True)
         self.scrollable_box_cast.setObjectName("scrollable_box_cast")
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 359, 76))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 209, 76))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.box_cast = QtGui.QHBoxLayout(self.scrollAreaWidgetContents)
         self.box_cast.setContentsMargins(3, 3, 3, 3)
@@ -220,12 +220,12 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.pushButton_2 = QtGui.QPushButton(self.dockWidgetContents)
-        self.pushButton_2.setObjectName("pushButton_2")
-        self.horizontalLayout.addWidget(self.pushButton_2)
-        self.pushButton_3 = QtGui.QPushButton(self.dockWidgetContents)
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.horizontalLayout.addWidget(self.pushButton_3)
+        self.btn_back = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_back.setObjectName("btn_back")
+        self.horizontalLayout.addWidget(self.btn_back)
+        self.btn_forward = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_forward.setObjectName("btn_forward")
+        self.horizontalLayout.addWidget(self.btn_forward)
         spacerItem3 = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
         self.horizontalLayout.addItem(spacerItem3)
         self.button_sync = QtGui.QPushButton(self.dockWidgetContents)
@@ -243,7 +243,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(1)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -286,8 +286,8 @@ class Ui_MainWindow(object):
         self.pushButton_8.setText(QtGui.QApplication.translate("MainWindow", "View later", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_9.setText(QtGui.QApplication.translate("MainWindow", "Annex fetch", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_10.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_2.setText(QtGui.QApplication.translate("MainWindow", "Back", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_3.setText(QtGui.QApplication.translate("MainWindow", "Forward", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_back.setText(QtGui.QApplication.translate("MainWindow", "Back", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_forward.setText(QtGui.QApplication.translate("MainWindow", "Forward", None, QtGui.QApplication.UnicodeUTF8))
         self.button_sync.setText(QtGui.QApplication.translate("MainWindow", "Sync", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton.setText(QtGui.QApplication.translate("MainWindow", "settings", None, QtGui.QApplication.UnicodeUTF8))
 

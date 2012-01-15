@@ -25,6 +25,7 @@
 
 from PySide import QtGui
 import os
+from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
 from moviehamster.gui.util import humanize_mins
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
@@ -71,10 +72,14 @@ class GUI(QtGui.QMainWindow):
         tv.verticalHeader().setVisible(False)
         tv.horizontalHeader().setStretchLastSection(True)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
+        tv.doubleClicked.connect(self._save_library_to_history)
         tv.doubleClicked.connect(self._open_movie)
 
-    def _open_movie(self, idx):
+    def _open_movie(self, idx, nohist=False):
         imdb_id = self.model.getIdForRow(idx.row())
+        if not nohist:
+            self.history.append((self._open_movie, idx))
+            self.current += 1
         movie = self.db.get_movie(imdb_id)
 
         plot_short = movie.get('plot outline', "")
@@ -92,6 +97,8 @@ class GUI(QtGui.QMainWindow):
             runtime = movie.get('runtimes', [""])[0] # reload
             print "could not humanize", runtime, "for", id
         imdb_rating = str(movie.get('rating', "-"))
+        votes = movie.get('votes', "-")
+        rating = RICHTEXT_RATING % (imdb_rating, votes)
         director = movie.get('director', ["-"])[0]["name"]
         title = movie['long imdb title']
         title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
@@ -100,13 +107,26 @@ class GUI(QtGui.QMainWindow):
         self.ui.l_length.setText(runtime)
         self.ui.l_genres.setText(', '.join(genres))
         self.ui.l_countries.setText(', '.join(countries))
-        self.ui.box_cast.addWidget(QPushButton('hallo'))
-        self.ui.box_cast.addWidget(QPushButton('hallo2'))
-        self.ui.box_cast.addWidget(QPushButton('hallo3'))
-        self.ui.box_cast.addWidget(QPushButton('hallo3'))
-        self.ui.box_cast.addWidget(QPushButton('hallo3'))
-        self.ui.box_cast.addWidget(QPushButton('hallo3'))
+        for actor in cast:
+            actor_button = QPushButton(actor['name'])
+            actor_button.clicked.connect(self._open_person)
+            # TODO
+            # actor_button.id = actor['id']
+            self.ui.box_cast.addWidget(actor_button)
         self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
+        self.ui.l_title.setText(title)
+        self.ui.l_plot_short_3.setText(plot_short)
+        self.ui.l_plot_3.setText(plot)
+        self.ui.l_rating.setText(rating)
+
+    def _save_library_to_history(self):
+        self.history.append((self._open_library, self.ui.filter.text()))
+        self.current += 1
+
+    def _open_person(self):
+        pass
+        # TODO
+        # person_id = self.sender().id
 
     def _update_model(self, new_text):
         search_string = str(new_text)
@@ -130,12 +150,31 @@ class GUI(QtGui.QMainWindow):
             self.index_thread.start()
             L.d("syncer started")
 
+    def _open_library(self, filter, nohist=False):
+        self.ui.filter.setText(filter)
+        self._update_model(filter)
+        self.ui.stackedWidget.setCurrentWidget(self.ui.library_view)
+
     def _indexer_closed(self):
         L.d("indexer finished")
         if self._shutdown_requested:
             self.close()
         else:
             self.ui.button_sync.setText("Sync")
+
+    def _history_back(self):
+        print self.history
+        print self.current
+        if 0 < self.current < len(self.history):
+            self.history[self.current - 1][0](self.history[self.current - 1][1], nohist=True)
+            self.current -= 1
+
+    def _history_forward(self):
+        print self.history
+        print self.current
+        if 0 <= self.current < len(self.history) - 1:
+            self.history[self.current + 1][0](self.history[self.current + 1][1], nohist=True)
+            self.current += 1
 
     def closeEvent(self, event):
         L.d("shutdown requested")
@@ -151,6 +190,9 @@ class GUI(QtGui.QMainWindow):
             event.accept()
 
     def __init__(self, parent=None):
+        self.history = []
+        self.current = -1
+
         QtGui.QMainWindow.__init__(self, parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -158,11 +200,14 @@ class GUI(QtGui.QMainWindow):
         self._init_db()
         self._init_movie_list()
 
-        self.ui.stackedWidget.setCurrentWidget(self.ui.library_view)
-
         self.index_thread = None
         self._shutdown_requested = False
 
         self.ui.filter.textChanged.connect(self._update_model)
         self.ui.button_sync.clicked.connect(self.sync)
+
+        self.ui.btn_back.clicked.connect(self._history_back)
+        self.ui.btn_forward.clicked.connect(self._history_forward)
+
+        self._open_library('')
 
