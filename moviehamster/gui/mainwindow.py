@@ -267,7 +267,7 @@ class History(object):
             arg = id
 
         if self.current < len(self.history) - 1:
-            # avoid two history entries in a row
+            # avoid two library entries in a row
             if idx is not 0:
                 self.current += 1
             self.history.insert(self.current, (view, arg))
