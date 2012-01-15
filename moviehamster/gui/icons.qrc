@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/emblem-favorite.png</file>
+    <file>icons/bookmark.png</file>
     <file>icons/draw-triangle3.png</file>
     <file>icons/draw-triangle4.png</file>
   </qresource>
