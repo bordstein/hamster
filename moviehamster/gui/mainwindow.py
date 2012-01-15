@@ -26,7 +26,7 @@
 from PySide import QtGui
 import os
 from pprint import pprint
-from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings
+from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
 from moviehamster.gui.util import humanize_mins
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton
 from moviehamster.indexer import IndexThread
@@ -118,6 +118,15 @@ class GUI(QtGui.QMainWindow):
         self.ui.l_plot_short_3.setText(plot_short)
         self.ui.l_plot_3.setText(plot)
         self.ui.l_rating.setText(rating)
+        cover_img = movie.get("_cover_", None)
+        if cover_img:
+            raw_img = QByteArray.fromBase64(cover_img.encode("UTF-8"))
+            img = QtGui.QImage()
+            img.loadFromData(raw_img)
+            self.ui.l_img.setPixmap(QtGui.QPixmap.fromImage(img))
+        else:
+            self.ui.l_img.setText("-")
+
 
     def _save_library_to_history(self):
         self.history.append((self._open_library, self.ui.filter.text()))
