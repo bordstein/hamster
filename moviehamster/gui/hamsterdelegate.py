@@ -1,5 +1,6 @@
 from PySide.QtGui import QStyledItemDelegate, QColor, QStyle, QPen, QPixmap, QAbstractItemView
 from PySide.QtCore import Qt
+from moviehamster.constants import *
 
 class HamsterDelegate(QStyledItemDelegate):
     def __init__(self, parentView):
@@ -20,24 +21,24 @@ class HamsterDelegate(QStyledItemDelegate):
             return
         value = index.data()
 
-        if index.column() != 0 and option.state & QStyle.State_MouseOver:
+        if index.column() != MOVIELIST_COL_TITLE and option.state & QStyle.State_MouseOver:
             self.parentView.unsetCursor()
 
-        if index.column() == 3:
+        if index.column() == MOVIELIST_COL_FAVOURITE:
             pixmap =  QPixmap(":/icons/icons/emblem-favorite.png");
             option.rect.setRight(option.rect.left()+16)
             option.rect.setHeight(20)
             option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
             painter.drawPixmap(option.rect, pixmap)
 
-        elif index.column() == 4:
+        elif index.column() == MOVIELIST_COL_WATCHLATER:
             pixmap =  QPixmap(":/icons/icons/bookmark.png");
             option.rect.setRight(option.rect.left()+16)
             option.rect.setHeight(20)
             option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
             painter.drawPixmap(option.rect, pixmap)
 
-        elif index.column() == 0 and option.state & QStyle.State_MouseOver:
+        elif index.column() == MOVIELIST_COL_TITLE and option.state & QStyle.State_MouseOver:
             if value:
                 painter.save()
 

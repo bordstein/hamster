@@ -51,16 +51,16 @@ class ResultViewModel(QAbstractTableModel):
         elif role != Qt.DisplayRole: 
             return None
         elif self.results:
-            if index.column() == 0:
+            if index.column() == MOVIELIST_COL_TITLE:
                 return self.results[index.row()]["title"]
-            elif index.column() == 1:
+            elif index.column() == MOVIELIST_COL_YEAR:
                 return self.results[index.row()]["year"]
-            elif index.column() == 2:
+            elif index.column() == MOVIELIST_COL_RATING:
                 return str(self.results[index.row()]["rating"])
-            elif index.column() == 3:
+            elif index.column() == MOVIELIST_COL_FAVOURITE:
                 # TODO: get favourite
                 return None
-            elif index.column() == 4:
+            elif index.column() == MOVIELIST_COL_WATCHLATER:
                 # TODO: get watch later
                 return None
         return None
