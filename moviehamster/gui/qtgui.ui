@@ -474,7 +474,7 @@ p, li { white-space: pre-wrap; }
         <item row="2" column="2">
          <widget class="QLabel" name="l_length">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -487,7 +487,7 @@ p, li { white-space: pre-wrap; }
         <item row="3" column="2">
          <widget class="QLabel" name="l_countries">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -500,7 +500,7 @@ p, li { white-space: pre-wrap; }
         <item row="4" column="2">
          <widget class="QLabel" name="l_genres">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -513,7 +513,7 @@ p, li { white-space: pre-wrap; }
         <item row="5" column="2">
          <widget class="QListWidget" name="box_cast">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>

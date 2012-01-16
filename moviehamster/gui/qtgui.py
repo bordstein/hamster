@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Mon Jan 16 17:32:06 2012
+# Created: Mon Jan 16 18:01:10 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -236,7 +236,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_10.addWidget(self.pushButton_10)
         self.gridLayout_2.addLayout(self.horizontalLayout_10, 7, 0, 1, 4)
         self.l_length = QtGui.QLabel(self.movie_view)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.l_length.sizePolicy().hasHeightForWidth())
@@ -245,7 +245,7 @@ class Ui_MainWindow(object):
         self.l_length.setObjectName("l_length")
         self.gridLayout_2.addWidget(self.l_length, 2, 2, 1, 1)
         self.l_countries = QtGui.QLabel(self.movie_view)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.l_countries.sizePolicy().hasHeightForWidth())
@@ -254,7 +254,7 @@ class Ui_MainWindow(object):
         self.l_countries.setObjectName("l_countries")
         self.gridLayout_2.addWidget(self.l_countries, 3, 2, 1, 1)
         self.l_genres = QtGui.QLabel(self.movie_view)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.l_genres.sizePolicy().hasHeightForWidth())
@@ -263,7 +263,7 @@ class Ui_MainWindow(object):
         self.l_genres.setObjectName("l_genres")
         self.gridLayout_2.addWidget(self.l_genres, 4, 2, 1, 1)
         self.box_cast = QtGui.QListWidget(self.movie_view)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Ignored)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.box_cast.sizePolicy().hasHeightForWidth())
