@@ -23,13 +23,14 @@
 
 #!/usr/bin/python -d
 
-from PySide import QtGui
+from PySide import QtGui, QtCore
 import os
 from pprint import pprint
+import traceback
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
 from moviehamster.gui.linkbutton import LinkButton
 from moviehamster.gui.util import humanize_mins
-from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence, QToolButton
+from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence, QToolButton, QListWidgetItem
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
@@ -97,25 +98,9 @@ class GUI(QtGui.QMainWindow):
 
     def _open_movie(self, imdb_id, nohist=False):
         movie = self.db.get_movie(imdb_id)
-        while 1:
-            w = self.ui.box_cast.takeAt(0)
-            if w:
-                widget=w.widget()
-                widget.deleteLater()
-            else:
-                break
-        while 1:
-            w = self.ui.box_director.takeAt(0)
-            if w:
-                widget=w.widget()
-                widget.deleteLater()
-            else:
-                break
-
         plot_short = movie.get('plot outline', "")
         plot = movie.get('plot', [""])[0]
         genres = movie.get('genres', [""])
-        cast = movie.get('cast', [""])
         countries = movie.get('countries', [""])
         runtime = movie.get('runtimes', [""])[0]
         # handle stuff like "USA:107" in runtime array
@@ -132,26 +117,38 @@ class GUI(QtGui.QMainWindow):
         title = movie['long imdb title']
         title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
 
-        # TODO: handle multiple directors
-#        director = movie['director'][0]["name"]
-#        director_id = movie['director'][0]["person_id"]
-        for director in movie['director']:
-            director_button = LinkButton(director['name'])
-            director_button.clicked.connect(self._open_person)
-            director_button.id = director['person_id']
-            self.ui.box_director.addWidget(director_button)
-#        self.ui.btn_director.setText(director)
-#        self.ui.btn_director.id = director_id
-#        self.ui.btn_director.clicked.connect(self._open_person)
-#        self.ui.btn_director.setCursor(Qt.PointingHandCursor)
         self.ui.l_length.setText(runtime)
         self.ui.l_genres.setText(', '.join(genres))
         self.ui.l_countries.setText(', '.join(countries))
-        for actor in cast:
+
+        self.ui.box_director.clear()
+        last = len(movie['director']) - 1
+        for idx,director in enumerate(movie['director']):
+            director_button = LinkButton(director['name'])
+            director_button.clicked.connect(self._open_person)
+            director_button.id = director['person_id']
+            i = QListWidgetItem(director['name'], self.ui.box_director)
+            # dirty hack to avoid having the LinkButton text above the QListWidgetItem which looks bold then
+            brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+            i.setForeground(brush)
+            self.ui.box_director.setItemWidget(i, director_button)
+            if not idx == last:
+                QListWidgetItem('|', self.ui.box_cast)
+
+        self.ui.box_cast.clear()
+        last = len(movie['cast']) - 1
+        for idx,actor in enumerate(movie['cast']):
             actor_button = LinkButton(actor['name'])
             actor_button.clicked.connect(self._open_person)
             actor_button.id = actor['person_id']
-            self.ui.box_cast.addWidget(actor_button)
+            i = QListWidgetItem(actor['name'], self.ui.box_cast)
+            # dirty hack to avoid having the LinkButton text above the QListWidgetItem which looks bold then
+            brush = QtGui.QBrush(QtGui.QColor(255, 255, 255))
+            i.setForeground(brush)
+            self.ui.box_cast.setItemWidget(i, actor_button)
+            if not idx == last:
+                QListWidgetItem('|', self.ui.box_cast)
+
         self.ui.l_title.setText(title)
         self.ui.l_plot_short_3.setText(plot_short)
         self.ui.l_plot_3.setText(plot)

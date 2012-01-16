@@ -511,86 +511,35 @@ p, li { white-space: pre-wrap; }
          </widget>
         </item>
         <item row="5" column="2">
-         <widget class="QScrollArea" name="scrollable_box_cast">
+         <widget class="QListWidget" name="box_cast">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
+          <property name="flow">
+           <enum>QListView::LeftToRight</enum>
           </property>
-          <property name="frameShadow">
-           <enum>QFrame::Sunken</enum>
-          </property>
-          <property name="widgetResizable">
+          <property name="isWrapping" stdset="0">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>316</width>
-             <height>76</height>
-            </rect>
-           </property>
-           <layout class="QFormLayout" name="box_cast">
-            <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-            </property>
-            <property name="horizontalSpacing">
-             <number>3</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>3</number>
-            </property>
-            <property name="margin">
-             <number>0</number>
-            </property>
-           </layout>
-          </widget>
          </widget>
         </item>
         <item row="1" column="2">
-         <widget class="QScrollArea" name="scrollable_box_director">
+         <widget class="QListWidget" name="box_director">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
+           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
-          <property name="widgetResizable">
+          <property name="flow">
+           <enum>QListView::LeftToRight</enum>
+          </property>
+          <property name="isWrapping" stdset="0">
            <bool>true</bool>
           </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTop|Qt::AlignTrailing</set>
-          </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents_2">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>316</width>
-             <height>48</height>
-            </rect>
-           </property>
-           <layout class="QFormLayout" name="box_director">
-            <property name="fieldGrowthPolicy">
-             <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-            </property>
-            <property name="horizontalSpacing">
-             <number>0</number>
-            </property>
-            <property name="verticalSpacing">
-             <number>0</number>
-            </property>
-            <property name="margin">
-             <number>0</number>
-            </property>
-           </layout>
-          </widget>
          </widget>
         </item>
        </layout>
