@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Mon Jan 16 15:58:47 2012
+# Created: Mon Jan 16 16:16:53 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -268,6 +268,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.scrollable_box_cast.sizePolicy().hasHeightForWidth())
         self.scrollable_box_cast.setSizePolicy(sizePolicy)
+        self.scrollable_box_cast.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.scrollable_box_cast.setFrameShadow(QtGui.QFrame.Sunken)
         self.scrollable_box_cast.setWidgetResizable(True)
         self.scrollable_box_cast.setObjectName("scrollable_box_cast")
         self.scrollAreaWidgetContents = QtGui.QWidget()
@@ -281,7 +283,7 @@ class Ui_MainWindow(object):
         self.scrollable_box_cast.setWidget(self.scrollAreaWidgetContents)
         self.gridLayout_2.addWidget(self.scrollable_box_cast, 5, 2, 1, 1)
         self.scrollable_box_director = QtGui.QScrollArea(self.movie_view)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Minimum)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.MinimumExpanding, QtGui.QSizePolicy.Ignored)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.scrollable_box_director.sizePolicy().hasHeightForWidth())
@@ -290,7 +292,7 @@ class Ui_MainWindow(object):
         self.scrollable_box_director.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTop|QtCore.Qt.AlignTrailing)
         self.scrollable_box_director.setObjectName("scrollable_box_director")
         self.scrollAreaWidgetContents_2 = QtGui.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 316, 76))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 316, 48))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.box_director = QtGui.QFormLayout(self.scrollAreaWidgetContents_2)
         self.box_director.setFieldGrowthPolicy(QtGui.QFormLayout.AllNonFixedFieldsGrow)
