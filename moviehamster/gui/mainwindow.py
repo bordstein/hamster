@@ -141,21 +141,27 @@ class GUI(QtGui.QMainWindow):
         genres = movie.get('genres', [""])
         countries = movie.get('countries', [""])
         runtime = movie.get('runtimes', [""])[0]
-        # handle stuff like "USA:107" in runtime array
-        try:
-            if ":" in runtime:
-                runtime = runtime.split(":")[1]
-            runtime = humanize_mins(runtime)
-        except:
-            runtime = movie.get('runtimes', [""])[0] # reload
-            print "could not humanize", runtime, "for", id
+        final_runtime = None
+        if ":" in runtime:
+            runtimes = runtime.split(":")
+            for r in runtimes:
+                try:
+                    final_runtime = humanize_mins(r)
+                    break
+                except:
+                    pass
+        else:
+            final_runtime = humanize_mins(runtime)
+        if not final_runtime:
+            final_runtime = movie.get('runtimes', ["Not available"])[0] # reload
+            L.w("could not humanize " + runtime + " for " + str(imdb_id))
         imdb_rating = str(movie.get('rating', "-"))
         votes = movie.get('votes', "-")
         rating = RICHTEXT_RATING % (imdb_rating, votes)
         title = movie['long imdb title']
         title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
 
-        self.ui.l_length.setText(runtime)
+        self.ui.l_length.setText(final_runtime)
         self.ui.l_genres.setText(', '.join(genres))
         self.ui.l_countries.setText(', '.join(countries))
 
