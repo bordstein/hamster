@@ -155,7 +155,8 @@ class GUI(QtGui.QMainWindow):
         if not person_id:
             person_id = self.sender().id
         p = self.db.get_person('person_' + person_id)
-        self.ui.l_person_name.setText(p['name'])
+        name = '<span style=" font-size:16pt; font-weight:600;"> '+ p['name'] + '</span>'
+        self.ui.l_person_name.setText(name)
         self.ui.person_bio.setText(p['mini biography'][0])
         self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
         head_shot = p.get("headshot", None)
