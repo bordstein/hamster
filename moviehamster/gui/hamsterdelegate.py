@@ -14,6 +14,9 @@ class HamsterDelegate(QStyledItemDelegate):
         # Revert the mouse cursor when the mouse isn't over 
         # an item but still on the view widget
         self.parentView.viewportEntered.connect(self.parentView.unsetCursor)
+        
+        self.pixmap_favourite = QPixmap(":/icons/icons/emblem-favorite.png");
+        self.pixmap_bookmark = QPixmap(":/icons/icons/bookmark.png");
 
     def paint(self, painter, option, index):
         if not index.isValid():
@@ -25,18 +28,18 @@ class HamsterDelegate(QStyledItemDelegate):
             self.parentView.unsetCursor()
 
         if index.column() == MOVIELIST_COL_FAVOURITE:
-            pixmap =  QPixmap(":/icons/icons/emblem-favorite.png");
             option.rect.setRight(option.rect.left()+16)
             option.rect.setHeight(20)
             option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
-            painter.drawPixmap(option.rect, pixmap)
+            if value:
+                painter.drawPixmap(option.rect, self.pixmap_favourite)
 
         elif index.column() == MOVIELIST_COL_WATCHLATER:
-            pixmap =  QPixmap(":/icons/icons/bookmark.png");
             option.rect.setRight(option.rect.left()+16)
             option.rect.setHeight(20)
             option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
-            painter.drawPixmap(option.rect, pixmap)
+            if value:
+                painter.drawPixmap(option.rect, self.pixmap_bookmark)
 
         elif index.column() == MOVIELIST_COL_TITLE and option.state & QStyle.State_MouseOver:
             if value:

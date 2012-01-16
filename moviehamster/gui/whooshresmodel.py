@@ -19,15 +19,20 @@
 ##  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 ## 
 #############################################################################
-import re
 
 from PySide.QtCore import QAbstractTableModel, Qt
+from moviehamster.constants import *
  
 class ResultViewModel(QAbstractTableModel): 
-    def __init__(self, results, parent=None, *args):
+    def __init__(self, results, liststore, parent=None, *args):
         QAbstractTableModel.__init__(self, parent, *args)
         self.headerdata = ['Title', 'Year', 'Rating', 'Favorite', 'Watch Later']
         self.results = results
+        self.lists = liststore
+        #self.bookmark_list = self.lists.get_user_list("bookmark", failsave=True)
+        #self.favourite_list = self.lists.get_user_list("favourite", failsave=True)
+        #print self.bookmark_list
+        #print self.favourite_list
  
     def rowCount(self, parent): 
         if self.results:
@@ -58,11 +63,15 @@ class ResultViewModel(QAbstractTableModel):
             elif index.column() == MOVIELIST_COL_RATING:
                 return str(self.results[index.row()]["rating"])
             elif index.column() == MOVIELIST_COL_FAVOURITE:
-                # TODO: get favourite
-                return None
+                imdb_id = self.results[index.row()]['imdb_id']
+                if imdb_id in self.lists.get_favourites():
+                    return True
+                return False
             elif index.column() == MOVIELIST_COL_WATCHLATER:
-                # TODO: get watch later
-                return None
+                imdb_id = self.results[index.row()]['imdb_id']
+                if imdb_id in self.lists.get_watchlater():
+                    return True
+                return False
         return None
 
     def headerData(self, col, orientation, role):
