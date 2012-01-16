@@ -1,14 +1,13 @@
 <RCC>
   <qresource prefix="icons">
-    <file alias="clock_disabled">icons/clock_deselected.png</file>
-    <file alias="clock_enabled">icons/clock_selected.png</file>
-    <file alias="favorite_enabled">icons/star_selected.png</file>
-    <file alias="favorite_disabled">icons/star_deselected.png</file>
+<<<<<<< HEAD
     <file>icons/emblem-favorite.png</file>
     <file>icons/bookmark.png</file>
+=======
     <file>icons/view-refresh.png</file>
     <file>icons/go-next.png</file>
     <file>icons/go-previous.png</file>
+>>>>>>> 64cbcb3ddfd4592eae2131bf294d7b81fc634122
     <file>icons/draw-triangle3.png</file>
     <file>icons/process-stop.png</file>
     <file>icons/preferences-system.png</file>
