@@ -39,7 +39,7 @@ class ListStore(object):
 
     def save(self, ml):
         if ml._doc:
-            db.put_doc(ml._to_doc())
+            self.db.put_doc(ml._to_doc())
         else:
             raise Exception("no _doc - did you try to save new movielist?")
 
@@ -61,7 +61,13 @@ class ListStore(object):
             return ml
         elif failsave:
             self.create(name)
-            return self.get_list(listname, failsave=False)
+            return self.get_user_list(listname, failsave=False)
+
+    def get_favourites(self):
+        return self.get_user_list("favourites", failsave=True)
+
+    def get_watchlater(self):
+        return self.get_user_list("watchlater", failsave=True)
 
 def _extract_doc_ids(doclist):
     retval = []
