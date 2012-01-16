@@ -317,11 +317,6 @@ class History(object):
             self.current += 1
 
     def create_entry(self, id=None, overwrite=False):
-        L.d("CREATE HISTORY ENTRY")
-        L.d("BEFORE:")
-        L.d("CURRENT: %d" % self.current)
-        for m,a in self.history:
-            L.d(m.func_name + ' ' + a)
         idx = self.gui.ui.stackedWidget.currentIndex()
         if idx == 0:
             view = self.gui._open_library
@@ -345,12 +340,6 @@ class History(object):
             else:
                 self.current += 1
             self.history.append((view, arg))
-
-        L.d("AFTER:")
-        L.d("CURRENT: %d" % self.current)
-        for m,a in self.history:
-            L.d(m.func_name + ' ' + a)
-        L.d("*" * 78)
 
     def overwrite_entry(self):
         print 'called'
