@@ -513,7 +513,7 @@ p, li { white-space: pre-wrap; }
         <item row="5" column="2">
          <widget class="QScrollArea" name="scrollable_box_cast">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Ignored">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -533,7 +533,7 @@ p, li { white-space: pre-wrap; }
              <x>0</x>
              <y>0</y>
              <width>316</width>
-             <height>76</height>
+             <height>47</height>
             </rect>
            </property>
            <layout class="QFormLayout" name="box_cast">
