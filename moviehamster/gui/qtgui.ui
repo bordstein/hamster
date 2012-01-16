@@ -524,6 +524,9 @@ p, li { white-space: pre-wrap; }
           <property name="isWrapping" stdset="0">
            <bool>true</bool>
           </property>
+          <property name="resizeMode">
+           <enum>QListView::Adjust</enum>
+          </property>
          </widget>
         </item>
         <item row="1" column="2">
@@ -539,6 +542,9 @@ p, li { white-space: pre-wrap; }
           </property>
           <property name="isWrapping" stdset="0">
            <bool>true</bool>
+          </property>
+          <property name="resizeMode">
+           <enum>QListView::Adjust</enum>
           </property>
          </widget>
         </item>
