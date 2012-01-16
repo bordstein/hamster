@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
 #
-# Created: Mon Jan 16 21:24:10 2012
+# Created: Mon Jan 16 22:26:57 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.0.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -258,7 +258,6 @@ class Ui_MainWindow(object):
         self.box_cast.setSizePolicy(sizePolicy)
         self.box_cast.setFlow(QtGui.QListView.LeftToRight)
         self.box_cast.setProperty("isWrapping", True)
-        self.box_cast.setResizeMode(QtGui.QListView.Adjust)
         self.box_cast.setObjectName("box_cast")
         self.gridLayout_2.addWidget(self.box_cast, 6, 2, 1, 1)
         self.box_director = QtGui.QListWidget(self.movie_view)
@@ -269,7 +268,6 @@ class Ui_MainWindow(object):
         self.box_director.setSizePolicy(sizePolicy)
         self.box_director.setFlow(QtGui.QListView.LeftToRight)
         self.box_director.setProperty("isWrapping", True)
-        self.box_director.setResizeMode(QtGui.QListView.Adjust)
         self.box_director.setObjectName("box_director")
         self.gridLayout_2.addWidget(self.box_director, 2, 2, 1, 1)
         self.horizontalLayout_2 = QtGui.QHBoxLayout()
