@@ -27,8 +27,9 @@ from PySide import QtGui
 import os
 from pprint import pprint
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
+from moviehamster.gui.linkbutton import LinkButton
 from moviehamster.gui.util import humanize_mins
-from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence
+from PySide.QtGui import QDesktopServices, QAbstractItemView, QPushButton, QShortcut, QKeySequence, QToolButton
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
@@ -96,6 +97,20 @@ class GUI(QtGui.QMainWindow):
 
     def _open_movie(self, imdb_id, nohist=False):
         movie = self.db.get_movie(imdb_id)
+        while 1:
+            w = self.ui.box_cast.takeAt(0)
+            if w:
+                widget=w.widget()
+                widget.deleteLater()
+            else:
+                break
+        while 1:
+            w = self.ui.box_director.takeAt(0)
+            if w:
+                widget=w.widget()
+                widget.deleteLater()
+            else:
+                break
 
         plot_short = movie.get('plot outline', "")
         plot = movie.get('plot', [""])[0]
@@ -114,23 +129,26 @@ class GUI(QtGui.QMainWindow):
         imdb_rating = str(movie.get('rating', "-"))
         votes = movie.get('votes', "-")
         rating = RICHTEXT_RATING % (imdb_rating, votes)
-        director = movie.get('director', ["-"])[0]["name"]
         title = movie['long imdb title']
         title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
 
-        self.ui.btn_director.setText(director)
+        # TODO: handle multiple directors
+#        director = movie['director'][0]["name"]
+#        director_id = movie['director'][0]["person_id"]
+        for director in movie['director']:
+            director_button = LinkButton(director['name'])
+            director_button.clicked.connect(self._open_person)
+            director_button.id = director['person_id']
+            self.ui.box_director.addWidget(director_button)
+#        self.ui.btn_director.setText(director)
+#        self.ui.btn_director.id = director_id
+#        self.ui.btn_director.clicked.connect(self._open_person)
+#        self.ui.btn_director.setCursor(Qt.PointingHandCursor)
         self.ui.l_length.setText(runtime)
         self.ui.l_genres.setText(', '.join(genres))
         self.ui.l_countries.setText(', '.join(countries))
-        while 1:
-            w = self.ui.box_cast.takeAt(0)
-            if w:
-                widget=w.widget()
-                widget.deleteLater()
-            else:
-                break
         for actor in cast:
-            actor_button = QPushButton(actor['name'])
+            actor_button = LinkButton(actor['name'])
             actor_button.clicked.connect(self._open_person)
             actor_button.id = actor['person_id']
             self.ui.box_cast.addWidget(actor_button)
@@ -157,7 +175,7 @@ class GUI(QtGui.QMainWindow):
         p = self.db.get_person('person_' + person_id)
         name = '<span style=" font-size:16pt; font-weight:600;"> '+ p['name'] + '</span>'
         self.ui.l_person_name.setText(name)
-        self.ui.person_bio.setText(p['mini biography'][0])
+        self.ui.person_bio.setText(p['mini biography'])
         self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
         head_shot = p.get("headshot", None)
         if head_shot:

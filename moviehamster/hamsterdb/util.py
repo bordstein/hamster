@@ -74,11 +74,18 @@ def _dictify(obj):
 def convert_person(imdb_person):
     person = {}
     person['name'] = imdb_person['name']
-    person['mini biography'] = imdb_person['mini biography']
+    try:
+        person['mini biography'] = imdb_person['mini biography'][0]
+    except:
+        person['mini biography'] = 'No biography available'
     person['actor'] = _get_movie_ids_for_person(imdb_person, "actor")
     person['director'] = _get_movie_ids_for_person(imdb_person, "director")
     person['producer'] = _get_movie_ids_for_person(imdb_person, "producer")
-    person['headshot'] = base64.b64encode(urllib.urlopen(imdb_person['headshot']).read())
+    headshot_url = imdb_person.get('headshot', None)
+    if headshot_url:
+        person['headshot'] = base64.b64encode(urllib.urlopen(imdb_person['headshot']).read())
+    else:
+        person['headshot'] = '-'
     return person
 
 def _get_movie_ids_for_person(imdb_person, role):
