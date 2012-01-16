@@ -32,6 +32,7 @@ from PySide.QtGui import QDesktopServices, QAbstractItemView, QShortcut, QKeySeq
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
+from moviehamster.constants import *
 from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
 from hamsterdelegate import HamsterDelegate
@@ -72,26 +73,30 @@ class GUI(QtGui.QMainWindow):
         self.ui.button_movie_favourite.toggled.connect(self._set_favourite_status)
         self.ui.button_movie_watchlater.toggled.connect(self._set_watchlater_status)
 
-    def _set_favourite_status(self, toggled):
-        if self._current_movie:
-            L.d("setting favourite status for %s to %s" % (self._current_movie, toggled))
+    def _set_favourite_status(self, toggled, current_movie=None):
+        if not current_movie:
+            current_movie = self._current_movie
+        if current_movie:
+            L.d("setting favourite status for %s to %s" % (current_movie, toggled))
             favourites = self.db.lists.get_favourites()
             if toggled:
-                favourites.append(self._current_movie)
+                favourites.append(current_movie)
                 self.db.lists.save(favourites)
             else:
-                favourites.remove(self._current_movie)
+                favourites.remove(current_movie)
                 self.db.lists.save(favourites)
 
-    def _set_watchlater_status(self, toggled):
-        if self._current_movie:
-            L.d("setting watchlater status for %s to %s" % (self._current_movie, toggled))
+    def _set_watchlater_status(self, toggled, current_movie=None):
+        if not current_movie:
+            current_movie = self._current_movie
+        if current_movie:
+            L.d("setting watchlater status for %s to %s" % (current_movie, toggled))
             watchlater = self.db.lists.get_watchlater()
             if toggled:
-                watchlater.append(self._current_movie)
+                watchlater.append(current_movie)
                 self.db.lists.save(watchlater)
             else:
-                watchlater.remove(self._current_movie)
+                watchlater.remove(current_movie)
                 self.db.lists.save(watchlater)
 
     def _init_movie_list(self):
@@ -112,10 +117,18 @@ class GUI(QtGui.QMainWindow):
     def _table_clicked(self, idx):
         col = idx.column()
         row = idx.row()
-        if col == 0:
+        imdb_id = self.model.getIdForRow(row)
+        if col == MOVIELIST_COL_TITLE:
             self.history.create_entry(overwrite=True)
-            imdb_id = self.model.getIdForRow(row)
             self._open_movie(imdb_id)
+        elif col == MOVIELIST_COL_FAVOURITE:
+            current_state = self.model.data(idx, Qt.DisplayRole)
+            L.d("clicked on favorite, state is %s" % current_state)
+            self._set_favourite_status(not current_state, imdb_id)
+        elif col == MOVIELIST_COL_WATCHLATER:
+            current_state = self.model.data(idx, Qt.DisplayRole)
+            L.d("clicked on watchlater, state is %s" % current_state)
+            self._set_watchlater_status(not current_state, imdb_id)
         else:
             pass
             # TODO
