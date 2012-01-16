@@ -24,6 +24,8 @@
 
 import imdb
 from numbers import Number
+import base64
+import urllib
 
 def normalize(obj):
     #print "normalizing", obj
@@ -72,11 +74,11 @@ def _dictify(obj):
 def convert_person(imdb_person):
     person = {}
     person['name'] = imdb_person['name']
-    person['headshot'] = imdb_person['headshot']
     person['mini biography'] = imdb_person['mini biography']
     person['actor'] = _get_movie_ids_for_person(imdb_person, "actor")
     person['director'] = _get_movie_ids_for_person(imdb_person, "director")
     person['producer'] = _get_movie_ids_for_person(imdb_person, "producer")
+    person['headshot'] = base64.b64encode(urllib.urlopen(imdb_person['headshot']).read())
     return person
 
 def _get_movie_ids_for_person(imdb_person, role):

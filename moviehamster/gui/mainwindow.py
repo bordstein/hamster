@@ -158,6 +158,14 @@ class GUI(QtGui.QMainWindow):
         self.ui.l_person_name.setText(p['name'])
         self.ui.person_bio.setText(p['mini biography'][0])
         self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
+        head_shot = p.get("headshot", None)
+        if head_shot:
+            raw_img = QByteArray.fromBase64(head_shot.encode("UTF-8"))
+            img = QtGui.QImage()
+            img.loadFromData(raw_img)
+            self.ui.l_headshot.setPixmap(QtGui.QPixmap.fromImage(img))
+        else:
+            self.ui.l_headshot.setText("-")
         if not nohist:
             self.history.create_entry(person_id)
 
