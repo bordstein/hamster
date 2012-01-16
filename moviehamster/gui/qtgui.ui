@@ -13,6 +13,130 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget{
+background-color: rgb(55,55,55);
+	color: rgb(188, 203, 215);
+}
+
+/* push buttons */
+QPushButton:focus {
+	border: none;
+	outline: none;
+}
+QPushButton{
+border: none;
+}
+
+/* horizontal scroll bar */
+QScrollBar:horizontal {
+     border: 2px solid grey;
+     background: #32CC99;
+     height: 15px;
+     margin: 0px 20px 0 20px;
+ }
+ QScrollBar::handle:horizontal {
+     background: white;
+     min-width: 20px;
+ }
+ QScrollBar::add-line:horizontal {
+     border: 2px solid grey;
+     background: #32CC99;
+     width: 20px;
+     subcontrol-position: right;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:horizontal {
+     border: 2px solid grey;
+     background: #32CC99;
+     width: 20px;
+     subcontrol-position: left;
+     subcontrol-origin: margin;
+ }
+
+/* vertical scroll  bar */
+  QScrollBar:vertical {
+      border: 2px solid grey;
+      background: #32CC99;
+      width: 15px;
+      margin: 22px 0 22px 0;
+  }
+  QScrollBar::handle:vertical {
+      background: white;
+      min-height: 20px;
+  }
+  QScrollBar::add-line:vertical {
+      border: 2px solid grey;
+      background: #32CC99;
+      height: 20px;
+      subcontrol-position: bottom;
+      subcontrol-origin: margin;
+  }
+
+  QScrollBar::sub-line:vertical {
+      border: 2px solid grey;
+      background: #32CC99;
+      height: 20px;
+      subcontrol-position: top;
+      subcontrol-origin: margin;
+  }
+  QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+      border: 2px solid grey;
+      width: 3px;
+      height: 3px;
+      background: white;
+  }
+
+  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+      background: none;
+  }
+
+/* table view */
+QTableView{
+	font: 12pt &quot;Ubuntu&quot;;
+	color: rgb(188, 203, 215);
+background-color: rgb(55,55,55);
+     alternate-background-color: rgb(49, 49, 49);
+     selection-background-color: rgb(0, 0, 127);
+ }
+
+/*  tab bar */
+QTabWidget::pane { /* The tab widget frame */
+     border-top: 2px solid #C2C7CB;
+     position: absolute;
+     top: -0.5em;
+ }
+
+ QTabWidget::tab-bar {
+     alignment: center;
+ }
+
+ /* Style the tab using the tab sub-control. Note that
+     it reads QTabBar _not_ QTabWidget */
+ QTabBar::tab {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+     border: 2px solid #C4C4C3;
+     border-bottom-color: #C2C7CB; /* same as the pane color */
+     border-top-left-radius: 4px;
+     border-top-right-radius: 4px;
+     min-width: 8ex;
+     padding: 2px;
+ }
+
+ QTabBar::tab:selected, QTabBar::tab:hover {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #fafafa, stop: 0.4 #f4f4f4,
+                                 stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);
+ }
+
+ QTabBar::tab:selected {
+     border-color: #9B9B9B;
+     border-bottom-color: #C2C7CB; /* same as pane color */
+ }</string>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="1">
@@ -52,7 +176,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QTableView" name="movieList"/>
+         <widget class="QTableView" name="movieList">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -469,8 +600,8 @@ p, li { white-space: pre-wrap; }
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>335</width>
-             <height>76</height>
+             <width>98</width>
+             <height>28</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="box_cast">

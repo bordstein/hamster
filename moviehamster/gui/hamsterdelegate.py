@@ -9,6 +9,7 @@ class HamsterDelegate(QStyledItemDelegate):
 
         # We need that to receive mouse move events in editorEvent
         self.parentView = parentView
+        self.parentView.setMouseTracking(True)
 
         # Revert the mouse cursor when the mouse isn't over 
         # an item but still on the view widget
@@ -43,18 +44,19 @@ class HamsterDelegate(QStyledItemDelegate):
 
                 option.font.setUnderline(True)
                 pen = painter.pen()
-                pen.setColor(QColor(47, 111, 112))
+                pen.setColor(QColor(250, 250, 250))
                 painter.setPen(pen)
                 font = painter.font()
                 font.setUnderline(True)
                 painter.setFont(font)
-                option.rect.setLeft(option.rect.left()+4)
+                option.rect.setLeft(option.rect.left()+10)
+                option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
                 painter.drawText(option.rect, Qt.AlignLeft, unicode(value))
 
                 painter.restore()
                 self.parent().setCursor(Qt.PointingHandCursor)
         else:
-            painter.setPen(QPen(Qt.black))
-            option.rect.setLeft(option.rect.left()+4)
+            option.rect.setLeft(option.rect.left()+10)
+            option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
             painter.drawText(option.rect, Qt.AlignLeft, unicode(value))
             #QStyledItemDelegate.paint(self, painter, option, index)

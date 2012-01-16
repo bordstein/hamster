@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'qtgui.ui'
+# Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
 #
-# Created: Sun Jan 15 18:11:48 2012
-#      by: pyside-uic 0.2.11 running on PySide 1.1.0
+# Created: Mon Jan 16 10:04:59 2012
+#      by: pyside-uic 0.2.11 running on PySide 1.0.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,6 +13,128 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(995, 654)
+        MainWindow.setStyleSheet("QWidget{\n"
+"background-color: rgb(55,55,55);\n"
+"    color: rgb(188, 203, 215);\n"
+"}\n"
+"\n"
+"/* push buttons */\n"
+"QPushButton:focus {\n"
+"    border: none;\n"
+"    outline: none;\n"
+"}\n"
+"QPushButton{\n"
+"border: none;\n"
+"}\n"
+"\n"
+"/* horizontal scroll bar */\n"
+"QScrollBar:horizontal {\n"
+"     border: 2px solid grey;\n"
+"     background: #32CC99;\n"
+"     height: 15px;\n"
+"     margin: 0px 20px 0 20px;\n"
+" }\n"
+" QScrollBar::handle:horizontal {\n"
+"     background: white;\n"
+"     min-width: 20px;\n"
+" }\n"
+" QScrollBar::add-line:horizontal {\n"
+"     border: 2px solid grey;\n"
+"     background: #32CC99;\n"
+"     width: 20px;\n"
+"     subcontrol-position: right;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+" QScrollBar::sub-line:horizontal {\n"
+"     border: 2px solid grey;\n"
+"     background: #32CC99;\n"
+"     width: 20px;\n"
+"     subcontrol-position: left;\n"
+"     subcontrol-origin: margin;\n"
+" }\n"
+"\n"
+"/* vertical scroll  bar */\n"
+"  QScrollBar:vertical {\n"
+"      border: 2px solid grey;\n"
+"      background: #32CC99;\n"
+"      width: 15px;\n"
+"      margin: 22px 0 22px 0;\n"
+"  }\n"
+"  QScrollBar::handle:vertical {\n"
+"      background: white;\n"
+"      min-height: 20px;\n"
+"  }\n"
+"  QScrollBar::add-line:vertical {\n"
+"      border: 2px solid grey;\n"
+"      background: #32CC99;\n"
+"      height: 20px;\n"
+"      subcontrol-position: bottom;\n"
+"      subcontrol-origin: margin;\n"
+"  }\n"
+"\n"
+"  QScrollBar::sub-line:vertical {\n"
+"      border: 2px solid grey;\n"
+"      background: #32CC99;\n"
+"      height: 20px;\n"
+"      subcontrol-position: top;\n"
+"      subcontrol-origin: margin;\n"
+"  }\n"
+"  QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
+"      border: 2px solid grey;\n"
+"      width: 3px;\n"
+"      height: 3px;\n"
+"      background: white;\n"
+"  }\n"
+"\n"
+"  QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {\n"
+"      background: none;\n"
+"  }\n"
+"\n"
+"/* table view */\n"
+"QTableView{\n"
+"    font: 12pt \"Ubuntu\";\n"
+"    color: rgb(188, 203, 215);\n"
+"background-color: rgb(55,55,55);\n"
+"     alternate-background-color: rgb(49, 49, 49);\n"
+"     selection-background-color: rgb(0, 0, 127);\n"
+" }\n"
+"\n"
+"/*  tab bar */\n"
+"QTabWidget::pane { /* The tab widget frame */\n"
+"     border-top: 2px solid #C2C7CB;\n"
+"     position: absolute;\n"
+"     top: -0.5em;\n"
+" }\n"
+"\n"
+" QTabWidget::tab-bar {\n"
+"     alignment: center;\n"
+" }\n"
+"\n"
+" /* Style the tab using the tab sub-control. Note that\n"
+"     it reads QTabBar _not_ QTabWidget */\n"
+" QTabBar::tab {\n"
+"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"     border: 2px solid #C4C4C3;\n"
+"     border-bottom-color: #C2C7CB; /* same as the pane color */\n"
+"     border-top-left-radius: 4px;\n"
+"     border-top-right-radius: 4px;\n"
+"     min-width: 8ex;\n"
+"     padding: 2px;\n"
+" }\n"
+"\n"
+" QTabBar::tab:selected, QTabBar::tab:hover {\n"
+"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                 stop: 0 #fafafa, stop: 0.4 #f4f4f4,\n"
+"                                 stop: 0.5 #e7e7e7, stop: 1.0 #fafafa);\n"
+" }\n"
+"\n"
+" QTabBar::tab:selected {\n"
+"     border-color: #9B9B9B;\n"
+"     border-bottom-color: #C2C7CB; /* same as pane color */\n"
+" }")
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -44,6 +166,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.checkBox_2)
         self.verticalLayout.addWidget(self.widget)
         self.movieList = QtGui.QTableView(self.library_view)
+        self.movieList.setStyleSheet("")
+        self.movieList.setAlternatingRowColors(True)
         self.movieList.setObjectName("movieList")
         self.verticalLayout.addWidget(self.movieList)
         self.stackedWidget.addWidget(self.library_view)
@@ -245,7 +369,7 @@ class Ui_MainWindow(object):
         self.scrollable_box_cast.setWidgetResizable(True)
         self.scrollable_box_cast.setObjectName("scrollable_box_cast")
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 335, 76))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.box_cast = QtGui.QHBoxLayout(self.scrollAreaWidgetContents)
         self.box_cast.setContentsMargins(3, 3, 3, 3)
