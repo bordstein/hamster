@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
 #
-# Created: Mon Jan 16 22:26:57 2012
+# Created: Mon Jan 16 23:18:00 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.0.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,6 +44,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.checkBox_2)
         self.verticalLayout.addWidget(self.widget)
         self.movieList = QtGui.QTableView(self.library_view)
+        self.movieList.setAlternatingRowColors(True)
         self.movieList.setObjectName("movieList")
         self.verticalLayout.addWidget(self.movieList)
         self.stackedWidget.addWidget(self.library_view)
@@ -354,7 +355,7 @@ class Ui_MainWindow(object):
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

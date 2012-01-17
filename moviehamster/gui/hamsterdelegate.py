@@ -40,8 +40,8 @@ class HamsterDelegate(QStyledItemDelegate):
 
         elif index.column() == MOVIELIST_COL_WATCHLATER:
             option.rect.setRight(option.rect.left()+18)
-            option.rect.setHeight(22)
-            option.rect.setTop(option.rect.top()+4) #4 up -> reduce height by 4
+            option.rect.setHeight(21)
+            option.rect.setTop(option.rect.top()+3) #4 up -> reduce height by 4
             if value:
                 painter.drawPixmap(option.rect, self.pixmap_watchlater_enabled)
             else:
@@ -64,7 +64,5 @@ class HamsterDelegate(QStyledItemDelegate):
                 painter.restore()
                 self.parent().setCursor(Qt.PointingHandCursor)
         else:
-            painter.setPen(QPen(Qt.black))
             option.rect.setLeft(option.rect.left()+4)
             painter.drawText(option.rect, Qt.AlignLeft, unicode(value))
-            #QStyledItemDelegate.paint(self, painter, option, index)
