@@ -1,7 +1,10 @@
 from movielist import MovieList, movielist_from_doc
+from PySide.QtCore import QObject
+import moviehamster.log as L
 
-class ListStore(object):
-    def __init__(self, u1db, username):
+class ListStore(QObject):
+    def __init__(self, u1db, username, parent=None):
+        QObject.__init__(self, parent)
         self.db = u1db
         self._create_index()
         self.username = username
@@ -68,6 +71,22 @@ class ListStore(object):
 
     def get_watchlater(self):
         return self.get_user_list("watchlater", failsave=True)
+
+    def toggle_movie_in_list(self, toggled, current_movie=None,
+            name_movielist=None):
+        if not current_movie:
+            current_movie = self._current_movie
+        if current_movie:
+            if not name_movielist:
+                name_movielist = self.sender()._movielist
+            movielist = self.get_user_list(name_movielist, failsave=True)
+            L.d("setting favourite status for %s to %s" % (current_movie, toggled))
+            if toggled:
+                movielist.append(current_movie)
+                self.save(movielist)
+            else:
+                movielist.remove(current_movie)
+                self.save(movielist)
 
 def _extract_doc_ids(doclist):
     retval = []

@@ -69,35 +69,9 @@ class GUI(QtGui.QMainWindow):
         shortcut = QShortcut(QKeySequence(self.tr("Alt+Right")), self, self.history.forward)
 
     def _init_movie_list_buttons(self):
-        self._current_movie = None
-        self.ui.button_movie_favourite.toggled.connect(self._set_favourite_status)
-        self.ui.button_movie_watchlater.toggled.connect(self._set_watchlater_status)
-
-    def _set_favourite_status(self, toggled, current_movie=None):
-        if not current_movie:
-            current_movie = self._current_movie
-        if current_movie:
-            L.d("setting favourite status for %s to %s" % (current_movie, toggled))
-            favourites = self.db.lists.get_favourites()
-            if toggled:
-                favourites.append(current_movie)
-                self.db.lists.save(favourites)
-            else:
-                favourites.remove(current_movie)
-                self.db.lists.save(favourites)
-
-    def _set_watchlater_status(self, toggled, current_movie=None):
-        if not current_movie:
-            current_movie = self._current_movie
-        if current_movie:
-            L.d("setting watchlater status for %s to %s" % (current_movie, toggled))
-            watchlater = self.db.lists.get_watchlater()
-            if toggled:
-                watchlater.append(current_movie)
-                self.db.lists.save(watchlater)
-            else:
-                watchlater.remove(current_movie)
-                self.db.lists.save(watchlater)
+        self.db.lists._current_movie = None
+        self.ui.button_movie_favourite.toggled.connect(self.db.lists.toggle_movie_in_list)
+        self.ui.button_movie_watchlater.toggled.connect(self.db.lists.toggle_movie_in_list)
 
     def _init_movie_list(self):
         tv = self.ui.movieList
@@ -124,11 +98,13 @@ class GUI(QtGui.QMainWindow):
         elif col == MOVIELIST_COL_FAVOURITE:
             current_state = self.model.data(idx, Qt.DisplayRole)
             L.d("clicked on favorite, state is %s" % current_state)
-            self._set_favourite_status(not current_state, imdb_id)
+            self.db.lists.toggle_movie_in_list(not current_state, imdb_id, 
+                    NAME_USER_LIST_FAVOURITES)
         elif col == MOVIELIST_COL_WATCHLATER:
             current_state = self.model.data(idx, Qt.DisplayRole)
             L.d("clicked on watchlater, state is %s" % current_state)
-            self._set_watchlater_status(not current_state, imdb_id)
+            self.db.lists.toggle_movie_in_list(not current_state, imdb_id, 
+                    NAME_USER_LIST_WATCHLATER)
         else:
             pass
             # TODO
@@ -207,12 +183,18 @@ class GUI(QtGui.QMainWindow):
             self.ui.l_img.setText("-")
 
         # set toggle list buttons
-        self._current_movie = None # avoid firing signals on setting buttons
-        movie_is_favourite = imdb_id in self.db.lists.get_favourites()
+        self.db.lists._current_movie = None # avoid firing signals on setting buttons
+        favourites = self.db.lists.get_favourites()
+        movie_is_favourite = imdb_id in favourites
         self.ui.button_movie_favourite.setChecked(movie_is_favourite)
-        movie_is_watchlater = imdb_id in self.db.lists.get_watchlater()
+        self.ui.button_movie_favourite._movielist = NAME_USER_LIST_FAVOURITES
+
+        watchlater = self.db.lists.get_watchlater()
+        movie_is_watchlater = imdb_id in watchlater
         self.ui.button_movie_watchlater.setChecked(movie_is_watchlater)
-        self._current_movie = imdb_id
+        self.ui.button_movie_watchlater._movielist = NAME_USER_LIST_WATCHLATER
+
+        self.db.lists._current_movie = imdb_id
 
         self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
         if not nohist:
