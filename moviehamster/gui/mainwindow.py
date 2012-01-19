@@ -25,7 +25,7 @@
 
 from PySide import QtGui
 import os
-from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray
+from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray, QPropertyAnimation, QRect, QEasingCurve, QAbstractAnimation
 from moviehamster.gui.linkbutton import LinkButton
 from moviehamster.gui.util import humanize_mins
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QShortcut, QKeySequence, QListWidgetItem
@@ -87,6 +87,7 @@ class GUI(QtGui.QMainWindow):
         tv.verticalHeader().setDefaultSectionSize(24)
         tv.setSelectionBehavior(QAbstractItemView.SelectRows)
         tv.clicked.connect(self._table_clicked)
+        self.ui.button_extended_options.toggled.connect(self._toggle_extended_options)
 
     def _table_clicked(self, idx):
         col = idx.column()
@@ -299,6 +300,25 @@ class GUI(QtGui.QMainWindow):
         self.ui.btn_library.clicked.connect(self._open_library)
 
         self._open_library()
+
+    def _toggle_extended_options(self, enabled):
+        geometry = self.ui.widget_extended_options.size()
+        if enabled:
+            maxHeight = 30
+            duration = 700
+            self.ui.button_extended_options.setArrowType(Qt.UpArrow)
+        else:
+            maxHeight = 0
+            duration = 700
+            self.ui.button_extended_options.setArrowType(Qt.DownArrow)
+        # IMPORTANT: avoid garbage collection of animation by making
+        # it a object attribute (self.animation)
+        self.animation = QPropertyAnimation(self.ui.widget_extended_options, "maximumHeight")
+        self.animation.setDuration(duration)
+        self.animation.setStartValue(geometry.height())
+        self.animation.setEndValue(maxHeight)
+        self.animation.setEasingCurve(QEasingCurve.OutQuad)
+        self.animation.start(QAbstractAnimation.DeleteWhenStopped)
 
 class History(object):
     current = -1
