@@ -36,6 +36,7 @@ from moviehamster.constants import *
 from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
 from hamsterdelegate import HamsterDelegate
+import getpass
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -60,7 +61,7 @@ class GUI(QtGui.QMainWindow):
             #TODO catch exception
         self.index_path = self.db_dir + '/' + 'hamster.idx'
         self.db_path = self.db_dir + '/' + 'hamster.db'
-        self.user = os.environ['USERNAME']
+        self.user = getpass.getuser()
         self.db = HamsterDB(self.user, self.index_path, self.db_path)
         #TODO ask username from user?
 
