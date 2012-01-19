@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
 #
-# Created: Mon Jan 16 23:18:00 2012
+# Created: Thu Jan 19 11:37:39 2012
 #      by: pyside-uic 0.2.11 running on PySide 1.0.6
 #
 # WARNING! All changes made in this file will be lost!
@@ -276,7 +276,8 @@ class Ui_MainWindow(object):
         self.button_movie_favourite = QtGui.QPushButton(self.movie_view)
         self.button_movie_favourite.setText("")
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/icons/icons/emblem-favorite.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/icons/favorite_disabled"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(":/icons/favorite_enabled"), QtGui.QIcon.Active, QtGui.QIcon.On)
         self.button_movie_favourite.setIcon(icon2)
         self.button_movie_favourite.setCheckable(True)
         self.button_movie_favourite.setChecked(False)
@@ -285,7 +286,8 @@ class Ui_MainWindow(object):
         self.button_movie_watchlater = QtGui.QPushButton(self.movie_view)
         self.button_movie_watchlater.setText("")
         icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/icons/icons/bookmark.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(":/icons/clock_disabled"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon3.addPixmap(QtGui.QPixmap(":/icons/clock_enabled"), QtGui.QIcon.Active, QtGui.QIcon.On)
         self.button_movie_watchlater.setIcon(icon3)
         self.button_movie_watchlater.setCheckable(True)
         self.button_movie_watchlater.setObjectName("button_movie_watchlater")

@@ -528,7 +528,8 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/icons/icons/emblem-favorite.png</normaloff>:/icons/icons/emblem-favorite.png</iconset>
+              <normaloff>:/icons/favorite_disabled</normaloff>
+              <activeon>:/icons/favorite_enabled</activeon>:/icons/favorite_disabled</iconset>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -545,7 +546,8 @@ p, li { white-space: pre-wrap; }
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/icons/icons/bookmark.png</normaloff>:/icons/icons/bookmark.png</iconset>
+              <normaloff>:/icons/clock_disabled</normaloff>
+              <activeon>:/icons/clock_enabled</activeon>:/icons/clock_disabled</iconset>
             </property>
             <property name="checkable">
              <bool>true</bool>
