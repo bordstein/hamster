@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
+# Form implementation generated from reading ui file 'qtgui.ui'
 #
-# Created: Thu Jan 19 14:55:52 2012
-#      by: pyside-uic 0.2.11 running on PySide 1.0.6
+# Created: Thu Jan 19 16:01:05 2012
+#      by: pyside-uic 0.2.11 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -360,6 +360,10 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.stackedWidget, 0, 1, 1, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.dockWidget = QtGui.QDockWidget(MainWindow)
+        self.dockWidget.setStyleSheet("QPushButton{\n"
+"text-align:left;\n"
+"padding:5 3 5 3px;\n"
+"}")
         self.dockWidget.setFeatures(QtGui.QDockWidget.NoDockWidgetFeatures)
         self.dockWidget.setObjectName("dockWidget")
         self.dockWidgetContents = QtGui.QWidget()
@@ -400,17 +404,74 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.pushButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)
         self.btn_library = QtGui.QPushButton(self.dockWidgetContents)
+        self.btn_library.setStyleSheet("")
         self.btn_library.setObjectName("btn_library")
         self.verticalLayout_2.addWidget(self.btn_library)
-        self.listView = QtGui.QListView(self.dockWidgetContents)
-        self.listView.setObjectName("listView")
-        self.verticalLayout_2.addWidget(self.listView)
+        self.pushButton_2 = QtGui.QPushButton(self.dockWidgetContents)
+        self.pushButton_2.setObjectName("pushButton_2")
+        self.verticalLayout_2.addWidget(self.pushButton_2)
+        self.pushButton_3 = QtGui.QPushButton(self.dockWidgetContents)
+        icon8 = QtGui.QIcon()
+        icon8.addPixmap(QtGui.QPixmap(":/icons/favorite_enabled"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_3.setIcon(icon8)
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.verticalLayout_2.addWidget(self.pushButton_3)
+        self.pushButton_4 = QtGui.QPushButton(self.dockWidgetContents)
+        self.pushButton_4.setStyleSheet("")
+        icon9 = QtGui.QIcon()
+        icon9.addPixmap(QtGui.QPixmap(":/icons/clock_enabled"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton_4.setIcon(icon9)
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.verticalLayout_2.addWidget(self.pushButton_4)
+        self.toolButton = QtGui.QToolButton(self.dockWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton.sizePolicy().hasHeightForWidth())
+        self.toolButton.setSizePolicy(sizePolicy)
+        self.toolButton.setCheckable(True)
+        self.toolButton.setChecked(True)
+        self.toolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.toolButton.setArrowType(QtCore.Qt.UpArrow)
+        self.toolButton.setObjectName("toolButton")
+        self.verticalLayout_2.addWidget(self.toolButton)
+        self.listWidget = QtGui.QListWidget(self.dockWidgetContents)
+        self.listWidget.setResizeMode(QtGui.QListView.Adjust)
+        self.listWidget.setObjectName("listWidget")
+        QtGui.QListWidgetItem(self.listWidget)
+        self.verticalLayout_2.addWidget(self.listWidget)
+        self.toolButton_2 = QtGui.QToolButton(self.dockWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.toolButton_2.sizePolicy().hasHeightForWidth())
+        self.toolButton_2.setSizePolicy(sizePolicy)
+        self.toolButton_2.setCheckable(True)
+        self.toolButton_2.setChecked(True)
+        self.toolButton_2.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.toolButton_2.setArrowType(QtCore.Qt.UpArrow)
+        self.toolButton_2.setObjectName("toolButton_2")
+        self.verticalLayout_2.addWidget(self.toolButton_2)
+        self.listWidget_2 = QtGui.QListWidget(self.dockWidgetContents)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.listWidget_2.sizePolicy().hasHeightForWidth())
+        self.listWidget_2.setSizePolicy(sizePolicy)
+        self.listWidget_2.setResizeMode(QtGui.QListView.Adjust)
+        self.listWidget_2.setObjectName("listWidget_2")
+        QtGui.QListWidgetItem(self.listWidget_2)
+        self.verticalLayout_2.addWidget(self.listWidget_2)
+        spacerItem7 = QtGui.QSpacerItem(20, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.MinimumExpanding)
+        self.verticalLayout_2.addItem(spacerItem7)
         self.dockWidget.setWidget(self.dockWidgetContents)
         MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget)
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
         self.tabWidget.setCurrentIndex(0)
+        QtCore.QObject.connect(self.toolButton, QtCore.SIGNAL("clicked(bool)"), self.listWidget.setVisible)
+        QtCore.QObject.connect(self.toolButton_2, QtCore.SIGNAL("clicked(bool)"), self.listWidget_2.setVisible)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -459,5 +520,18 @@ class Ui_MainWindow(object):
 "</style></head><body style=\" font-family:\'Ubuntu\'; font-size:14pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600;\">hier wär das movie</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.btn_library.setText(QtGui.QApplication.translate("MainWindow", "Library", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_2.setText(QtGui.QApplication.translate("MainWindow", "Manage Lists", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_3.setText(QtGui.QApplication.translate("MainWindow", "Favourites", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_4.setText(QtGui.QApplication.translate("MainWindow", "Watch Later", None, QtGui.QApplication.UnicodeUTF8))
+        self.toolButton.setText(QtGui.QApplication.translate("MainWindow", "My Lists", None, QtGui.QApplication.UnicodeUTF8))
+        __sortingEnabled = self.listWidget.isSortingEnabled()
+        self.listWidget.setSortingEnabled(False)
+        self.listWidget.item(0).setText(QtGui.QApplication.translate("MainWindow", "Favourites", None, QtGui.QApplication.UnicodeUTF8))
+        self.listWidget.setSortingEnabled(__sortingEnabled)
+        self.toolButton_2.setText(QtGui.QApplication.translate("MainWindow", "Subscribed Lists", None, QtGui.QApplication.UnicodeUTF8))
+        __sortingEnabled = self.listWidget_2.isSortingEnabled()
+        self.listWidget_2.setSortingEnabled(False)
+        self.listWidget_2.item(0).setText(QtGui.QApplication.translate("MainWindow", "Favourites", None, QtGui.QApplication.UnicodeUTF8))
+        self.listWidget_2.setSortingEnabled(__sortingEnabled)
 
 import icons_rc
