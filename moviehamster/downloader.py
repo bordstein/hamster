@@ -26,6 +26,7 @@ import sys
 from PySide.QtCore import QTimer, QUrl, QObject, QCoreApplication, Signal, QBuffer, QIODevice, Qt
 from PySide.QtGui import QImage
 from PySide.QtNetwork import QNetworkRequest, QNetworkAccessManager
+import moviehamster.log as L
 
 class DownloadManager(QObject):
     dl_finished = Signal(str, str)
@@ -56,7 +57,7 @@ class DownloadManager(QObject):
         imdb_id = self.current_downloads.pop(reply)
 
         if reply.error():
-            print "Dowload of %s (%s) failed" % (imdb_id, url.toEncoded())
+            L.e("Dowload of %s (%s) failed" % (imdb_id, url.toEncoded()))
             self.dl_failed.emit(imdb_id)
             return
 
@@ -72,7 +73,7 @@ class DownloadManager(QObject):
             scaled_raw_img = raw_img
         payload = scaled_raw_img.toBase64()
         base64_image = unicode(payload)
-        print "Download of %s succeded" % url.toEncoded()
+        L.i("Download of %s succeded" % url.toEncoded())
         reply.deleteLater()
         self.dl_finished.emit(imdb_id, base64_image)
 
@@ -80,19 +81,21 @@ class DownloadManager(QObject):
         img = QImage()
         success = img.loadFromData(raw_img)
         if not success:
+            L.e("could not load image")
             return
         success = scaledPixmap = img.scaled(200, 300,
                 Qt.KeepAspectRatio, Qt.SmoothTransformation)
         if not success:
+            L.e("could not scale down image")
             return
         buffer = QBuffer()
         buffer.open(QIODevice.WriteOnly);
         success = scaledPixmap.save(buffer, 'JPG')
         buffer.close()
         if not success:
-            print "could not write!"
+            L.e("could not write to buffer")
             return
-        print "successfully downsized"
+        L.d("successfully downsized")
         return buffer.data()
 
 
