@@ -523,6 +523,9 @@ p, li { white-space: pre-wrap; }
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QPushButton" name="button_movie_favourite">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="styleSheet">
              <string notr="true">*{
 border: none;
@@ -548,6 +551,9 @@ outline: none;
           </item>
           <item>
            <widget class="QPushButton" name="button_movie_watchlater">
+            <property name="cursor">
+             <cursorShape>PointingHandCursor</cursorShape>
+            </property>
             <property name="styleSheet">
              <string notr="true">*{
 border: none;
