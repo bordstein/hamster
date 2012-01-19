@@ -523,6 +523,13 @@ p, li { white-space: pre-wrap; }
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
            <widget class="QPushButton" name="button_movie_favourite">
+            <property name="styleSheet">
+             <string notr="true">*{
+border: none;
+outline: none;
+  margin: 0 0px 0 0px;
+}</string>
+            </property>
             <property name="text">
              <string/>
             </property>
@@ -541,6 +548,13 @@ p, li { white-space: pre-wrap; }
           </item>
           <item>
            <widget class="QPushButton" name="button_movie_watchlater">
+            <property name="styleSheet">
+             <string notr="true">*{
+border: none;
+outline: none;
+  margin: 0 0px 0 0px;
+}</string>
+            </property>
             <property name="text">
              <string/>
             </property>
