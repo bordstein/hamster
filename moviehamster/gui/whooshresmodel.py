@@ -22,6 +22,7 @@
 
 from PySide.QtCore import QAbstractTableModel, Qt
 from moviehamster.constants import *
+import moviehamster.log as L
  
 class ResultViewModel(QAbstractTableModel): 
     def __init__(self, results, liststore, parent=None, *args):
@@ -64,12 +65,20 @@ class ResultViewModel(QAbstractTableModel):
                 return str(self.results[index.row()]["rating"])
             elif index.column() == MOVIELIST_COL_FAVOURITE:
                 imdb_id = self.results[index.row()]['imdb_id']
-                if imdb_id in self.lists.get_favourites():
+                favourites = self.lists.get_favourites()
+                if favourites == None:
+                    L.e('Could not load favourites')
+                    return False
+                if imdb_id in favourites:
                     return True
                 return False
             elif index.column() == MOVIELIST_COL_WATCHLATER:
                 imdb_id = self.results[index.row()]['imdb_id']
-                if imdb_id in self.lists.get_watchlater():
+                watchlater = self.lists.get_watchlater()
+                if watchlater == None:
+                    L.e('Could not load watchlater')
+                    return False
+                if imdb_id in watchlater:
                     return True
                 return False
         return None
