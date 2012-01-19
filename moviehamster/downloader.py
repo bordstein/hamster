@@ -23,7 +23,8 @@
 #############################################################################
 
 import sys
-from PySide.QtCore import QTimer, QUrl, QObject, QCoreApplication, Signal, QBuffer, QIODevice
+from PySide.QtCore import QTimer, QUrl, QObject, QCoreApplication, Signal, QBuffer, QIODevice, Qt
+from PySide.QtGui import QImage
 from PySide.QtNetwork import QNetworkRequest, QNetworkAccessManager
 
 class DownloadManager(QObject):
@@ -64,11 +65,36 @@ class DownloadManager(QObject):
         buffer.open(QIODevice.WriteOnly);
         buffer.write(reply.readAll())
         buffer.close()
-        payload = buffer.data().toBase64()
+        raw_img = buffer.data()
+        scaled_raw_img = self.downscale_image(raw_img)
+        if not scaled_raw_img:
+            # fallback to unscaled cover
+            scaled_raw_img = raw_img
+        payload = scaled_raw_img.toBase64()
         base64_image = unicode(payload)
         print "Download of %s succeded" % url.toEncoded()
         reply.deleteLater()
         self.dl_finished.emit(imdb_id, base64_image)
+
+    def downscale_image(self, raw_img):
+        img = QImage()
+        success = img.loadFromData(raw_img)
+        if not success:
+            return
+        success = scaledPixmap = img.scaled(200, 300,
+                Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        if not success:
+            return
+        buffer = QBuffer()
+        buffer.open(QIODevice.WriteOnly);
+        success = scaledPixmap.save(buffer, 'JPG')
+        buffer.close()
+        if not success:
+            print "could not write!"
+            return
+        print "successfully downsized"
+        return buffer.data()
+
 
     def lastlog(self, url, filename):
         print url, "to", filename, "ok"
