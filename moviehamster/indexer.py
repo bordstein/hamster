@@ -25,6 +25,7 @@
 from moviehamster.hamsterdb.util import normalize
 
 import sys
+import traceback
 import re
 import imdb
 import os
@@ -81,8 +82,8 @@ class Job(QRunnable):
                     nm['_meta_'][self.parent_thread.user]['movie_path'] = m3u_file
 
             self.obj.finished.emit(nm, str(self.imdb_id))
-        except Exception as e:
-            L.e(str(e))
+        except:
+            L.e(traceback.format_exc())
 
     def autoDelete(self):
         return True
