@@ -203,6 +203,13 @@ class GUI(QtGui.QMainWindow):
         if not nohist:
             self.history.create_entry(imdb_id)
 
+        # enable/disable play button
+        movie_base_dir = self.settings.value("movie_dir")
+        movie_ok = os.path.exists(
+                os.path.join(movie_base_dir,
+                    self.movie['_meta_'][self.user]['movie_path']))
+        self.ui.btn_play.setEnabled(movie_ok)
+
     def _open_person(self, person_id=None, nohist=False):
         if not person_id:
             person_id = self.sender().id
