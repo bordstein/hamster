@@ -27,12 +27,15 @@ from moviehamster.hamsterdb.util import normalize
 import sys
 import re
 import imdb
+import os
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 from downloader import DownloadManager
 import moviehamster.log as L
 import signal
+
+rex = re.compile(r".*\.(avi|mkv|mov)")
 
 # allow aborting via ctrl + c
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -42,12 +45,13 @@ class WorkerObject(QObject):
     finsig = Signal()
 
 class Job(QRunnable): 
-    def __init__(self, imdb_db, imdb_id, stopvar): 
+    def __init__(self, imdb_db, imdb_id, movie_dir_path, parent_thread): 
         QRunnable.__init__(self) 
         self.imdb_id = imdb_id 
         self.imdb_db = imdb_db
         self.obj = WorkerObject()
-        self.thread = stopvar
+        self.thread = parent_thread
+        self.movie_dir_path = movie_dir_path
 
     def run(self): 
         if self.thread.stopvar:
@@ -57,6 +61,18 @@ class Job(QRunnable):
         L.d( "fetching %s ..." % self.imdb_id)
         movie = self.imdb_db.get_movie(self.imdb_id)
         nm = normalize(movie)
+
+        #TODO use real username
+        nm['_meta_'] = {}
+        nm['_meta_']['user'] = {}
+
+        movie_files = get_movie_files(self.movie_dir_path)
+        if movie_files:
+            if len(movie_files) == 1:
+                nm['_meta_']['user']['movie_path'] = movie_files[0]
+                L.d("!found %s" % movie_files[0])
+            else:
+                L.d("!more than one movie found --> TODO create m3u")
 
         self.obj.finished.emit(nm, str(self.imdb_id))
 
@@ -132,7 +148,12 @@ class IndexThread (QThread):
                         available_movie_count += 1
                         L.d("%s already in db - skipping" % imdb_id)
                     else:
-                        j = Job(imdb_db, imdb_id, self) 
+                        L.d("spawning")
+                        try:
+                            j = Job(imdb_db, imdb_id, directory, self) 
+                        except Exception as e:
+                            print e
+                        L.d("spawned")
                         j.obj.finished.connect(writer.index_movie,
                                 Qt.QueuedConnection)
                         tp.start(j) 
@@ -154,6 +175,16 @@ class IndexThread (QThread):
         L.d("waiting for threadpool to be done...")
         tp.waitForDone()
         self.quit()
+
+def get_movie_files(directory):
+    full_path_dir = os.path.abspath(directory)
+    files = os.listdir(full_path_dir)
+    movie_files = []
+    for f in files:
+        if rex.match(f):
+            full_mv_path = os.path.join(full_path_dir, f)
+            movie_files.append(full_mv_path)
+    return movie_files
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) 
