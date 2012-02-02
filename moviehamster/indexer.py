@@ -58,25 +58,33 @@ class Job(QRunnable):
             # threadpool already stopped - do nothing
             return
 
-        L.d( "fetching %s ..." % self.imdb_id)
-        movie = self.imdb_db.get_movie(self.imdb_id)
-        nm = normalize(movie)
+        try:
+            L.d( "fetching %s ..." % self.imdb_id)
+            movie = self.imdb_db.get_movie(self.imdb_id)
+            nm = normalize(movie)
 
-        #TODO use real username
-        nm['_meta_'] = {}
-        nm['_meta_']['user'] = {}
+            #TODO use real username
+            nm['_meta_'] = {}
+            nm['_meta_']['user'] = {}
 
-        movie_files = get_movie_files(self.movie_dir_path)
-        if movie_files:
-            if len(movie_files) == 1:
-                rel_movie_path = os.path.relpath(movie_files[0],
-                        self.parent_thread.media_path)
-                nm['_meta_']['user']['movie_path'] = rel_movie_path
-                L.d("!found %s" % rel_movie_path)
-            else:
-                L.d("!more than one movie found --> TODO create m3u")
+            movie_files = get_movie_files(self.movie_dir_path)
+            if movie_files:
+                if len(movie_files) == 1:
+                    rel_movie_path = os.path.relpath(movie_files[0],
+                            self.parent_thread.media_path)
+                    nm['_meta_']['user']['movie_path'] = rel_movie_path
+                else:
+                    L.d("!more than one movie found --> TODO create m3u")
+                    movie_files = convert_abspath_to_fname(movie_files)
+                    movie_files = sorted(movie_files)
+                    m3u_file = os.path.join(self.movie_dir_path, "playlist.m3u")
+                    L.d("!m3u file: %s" % m3u_file)
+                    write_m3u(movie_files, m3u_file)
+                    nm['_meta_']['user']['movie_path'] = m3u_file
 
-        self.obj.finished.emit(nm, str(self.imdb_id))
+            self.obj.finished.emit(nm, str(self.imdb_id))
+        except Exception as e:
+            L.e(str(e))
 
     def autoDelete(self):
         return True
@@ -187,6 +195,19 @@ def get_movie_files(directory):
             full_mv_path = os.path.join(full_path_dir, f)
             movie_files.append(full_mv_path)
     return movie_files
+
+def write_m3u(media_files, output_file):
+    with open(output_file, "a") as m3u_file:
+        for f in media_files:
+            m3u_file.write(f + "\r\n")
+
+def convert_abspath_to_fname(list_of_files):
+    ret_list = []
+    for f in list_of_files:
+        ret_list.append(os.path.basename(f))
+    return ret_list
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) 
