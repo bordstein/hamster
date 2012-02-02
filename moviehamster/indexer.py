@@ -50,11 +50,11 @@ class Job(QRunnable):
         self.imdb_id = imdb_id 
         self.imdb_db = imdb_db
         self.obj = WorkerObject()
-        self.thread = parent_thread
+        self.parent_thread = parent_thread
         self.movie_dir_path = movie_dir_path
 
     def run(self): 
-        if self.thread.stopvar:
+        if self.parent_thread.stopvar:
             # threadpool already stopped - do nothing
             return
 
@@ -69,8 +69,10 @@ class Job(QRunnable):
         movie_files = get_movie_files(self.movie_dir_path)
         if movie_files:
             if len(movie_files) == 1:
-                nm['_meta_']['user']['movie_path'] = movie_files[0]
-                L.d("!found %s" % movie_files[0])
+                rel_movie_path = os.path.relpath(movie_files[0],
+                        self.parent_thread.media_path)
+                nm['_meta_']['user']['movie_path'] = rel_movie_path
+                L.d("!found %s" % rel_movie_path)
             else:
                 L.d("!more than one movie found --> TODO create m3u")
 
