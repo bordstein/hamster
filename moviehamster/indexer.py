@@ -25,14 +25,18 @@
 from moviehamster.hamsterdb.util import normalize
 
 import sys
+import traceback
 import re
 import imdb
+import os
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 from downloader import DownloadManager
 import moviehamster.log as L
 import signal
+
+rex = re.compile(r".*\.(avi|mkv|mov)")
 
 # allow aborting via ctrl + c
 signal.signal(signal.SIGINT, signal.SIG_DFL)
@@ -42,23 +46,44 @@ class WorkerObject(QObject):
     finsig = Signal()
 
 class Job(QRunnable): 
-    def __init__(self, imdb_db, imdb_id, stopvar): 
+    def __init__(self, imdb_db, imdb_id, movie_dir_path, parent_thread): 
         QRunnable.__init__(self) 
         self.imdb_id = imdb_id 
         self.imdb_db = imdb_db
         self.obj = WorkerObject()
-        self.thread = stopvar
+        self.parent_thread = parent_thread
+        self.movie_dir_path = movie_dir_path
 
     def run(self): 
-        if self.thread.stopvar:
+        if self.parent_thread.stopvar:
             # threadpool already stopped - do nothing
             return
 
-        L.d( "fetching %s ..." % self.imdb_id)
-        movie = self.imdb_db.get_movie(self.imdb_id)
-        nm = normalize(movie)
+        try:
+            L.d( "fetching %s ..." % self.imdb_id)
+            movie = self.imdb_db.get_movie(self.imdb_id)
+            nm = normalize(movie)
 
-        self.obj.finished.emit(nm, str(self.imdb_id))
+            nm['_meta_'] = {}
+            nm['_meta_'][self.parent_thread.user] = {}
+
+            movie_files = get_movie_files(self.movie_dir_path)
+            if movie_files:
+                if len(movie_files) == 1:
+                    rel_movie_path = os.path.relpath(movie_files[0],
+                            self.parent_thread.media_path)
+                    nm['_meta_'][self.parent_thread.user]['movie_path'] = rel_movie_path
+                else:
+                    movie_files = convert_abspath_to_fname(movie_files)
+                    movie_files = sorted(movie_files)
+                    m3u_file = os.path.join(self.movie_dir_path, "hamster_playlist.m3u")
+                    L.d("more than one file found - created m3u file in: %s" % m3u_file)
+                    write_m3u(movie_files, m3u_file)
+                    nm['_meta_'][self.parent_thread.user]['movie_path'] = m3u_file
+
+            self.obj.finished.emit(nm, str(self.imdb_id))
+        except:
+            L.e(traceback.format_exc())
 
     def autoDelete(self):
         return True
@@ -132,7 +157,12 @@ class IndexThread (QThread):
                         available_movie_count += 1
                         L.d("%s already in db - skipping" % imdb_id)
                     else:
-                        j = Job(imdb_db, imdb_id, self) 
+                        L.d("spawning")
+                        try:
+                            j = Job(imdb_db, imdb_id, directory, self) 
+                        except Exception as e:
+                            print e
+                        L.d("spawned")
                         j.obj.finished.connect(writer.index_movie,
                                 Qt.QueuedConnection)
                         tp.start(j) 
@@ -154,6 +184,29 @@ class IndexThread (QThread):
         L.d("waiting for threadpool to be done...")
         tp.waitForDone()
         self.quit()
+
+def get_movie_files(directory):
+    full_path_dir = os.path.abspath(directory)
+    files = os.listdir(full_path_dir)
+    movie_files = []
+    for f in files:
+        if rex.match(f):
+            full_mv_path = os.path.join(full_path_dir, f)
+            movie_files.append(full_mv_path)
+    return movie_files
+
+def write_m3u(media_files, output_file):
+    with open(output_file, "w") as m3u_file:
+        for f in media_files:
+            m3u_file.write(f + "\r\n")
+
+def convert_abspath_to_fname(list_of_files):
+    ret_list = []
+    for f in list_of_files:
+        ret_list.append(os.path.basename(f))
+    return ret_list
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv) 

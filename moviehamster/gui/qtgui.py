@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'qtgui.ui'
+# Form implementation generated from reading ui file 'moviehamster/gui/qtgui.ui'
 #
-# Created: Thu Jan 19 16:01:05 2012
-#      by: pyside-uic 0.2.11 running on PySide 1.1.0
+# Created: Thu Feb  2 10:43:18 2012
+#      by: pyside-uic 0.2.11 running on PySide 1.0.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -260,9 +260,9 @@ class Ui_MainWindow(object):
         self.pushButton_9 = QtGui.QPushButton(self.movie_view)
         self.pushButton_9.setObjectName("pushButton_9")
         self.horizontalLayout_10.addWidget(self.pushButton_9)
-        self.pushButton_10 = QtGui.QPushButton(self.movie_view)
-        self.pushButton_10.setObjectName("pushButton_10")
-        self.horizontalLayout_10.addWidget(self.pushButton_10)
+        self.btn_play = QtGui.QPushButton(self.movie_view)
+        self.btn_play.setObjectName("btn_play")
+        self.horizontalLayout_10.addWidget(self.btn_play)
         self.gridLayout_2.addLayout(self.horizontalLayout_10, 8, 0, 1, 4)
         self.l_length = QtGui.QLabel(self.movie_view)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Fixed)
@@ -513,7 +513,7 @@ class Ui_MainWindow(object):
 "<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:16pt; font-weight:600;\">rating</span></p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
         self.checkBox_4.setText(QtGui.QApplication.translate("MainWindow", "Already watched", None, QtGui.QApplication.UnicodeUTF8))
         self.pushButton_9.setText(QtGui.QApplication.translate("MainWindow", "Annex fetch", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushButton_10.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
+        self.btn_play.setText(QtGui.QApplication.translate("MainWindow", "Play", None, QtGui.QApplication.UnicodeUTF8))
         self.l_title.setText(QtGui.QApplication.translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
