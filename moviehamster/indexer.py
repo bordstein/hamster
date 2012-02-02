@@ -76,7 +76,7 @@ class Job(QRunnable):
                 else:
                     movie_files = convert_abspath_to_fname(movie_files)
                     movie_files = sorted(movie_files)
-                    m3u_file = os.path.join(self.movie_dir_path, "playlist.m3u")
+                    m3u_file = os.path.join(self.movie_dir_path, "hamster_playlist.m3u")
                     L.d("more than one file found - created m3u file in: %s" % m3u_file)
                     write_m3u(movie_files, m3u_file)
                     nm['_meta_'][self.parent_thread.user]['movie_path'] = m3u_file
@@ -196,7 +196,7 @@ def get_movie_files(directory):
     return movie_files
 
 def write_m3u(media_files, output_file):
-    with open(output_file, "a") as m3u_file:
+    with open(output_file, "w") as m3u_file:
         for f in media_files:
             m3u_file.write(f + "\r\n")
 
