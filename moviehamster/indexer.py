@@ -63,24 +63,22 @@ class Job(QRunnable):
             movie = self.imdb_db.get_movie(self.imdb_id)
             nm = normalize(movie)
 
-            #TODO use real username
             nm['_meta_'] = {}
-            nm['_meta_']['user'] = {}
+            nm['_meta_'][self.parent_thread.user] = {}
 
             movie_files = get_movie_files(self.movie_dir_path)
             if movie_files:
                 if len(movie_files) == 1:
                     rel_movie_path = os.path.relpath(movie_files[0],
                             self.parent_thread.media_path)
-                    nm['_meta_']['user']['movie_path'] = rel_movie_path
+                    nm['_meta_'][self.parent_thread.user]['movie_path'] = rel_movie_path
                 else:
-                    L.d("!more than one movie found --> TODO create m3u")
                     movie_files = convert_abspath_to_fname(movie_files)
                     movie_files = sorted(movie_files)
                     m3u_file = os.path.join(self.movie_dir_path, "playlist.m3u")
-                    L.d("!m3u file: %s" % m3u_file)
+                    L.d("more than one file found - created m3u file in: %s" % m3u_file)
                     write_m3u(movie_files, m3u_file)
-                    nm['_meta_']['user']['movie_path'] = m3u_file
+                    nm['_meta_'][self.parent_thread.user]['movie_path'] = m3u_file
 
             self.obj.finished.emit(nm, str(self.imdb_id))
         except Exception as e:

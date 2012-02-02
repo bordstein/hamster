@@ -309,7 +309,7 @@ class GUI(QtGui.QMainWindow):
         movie_base_dir = self.settings.value("movie_dir")
         os_open_file(
                 os.path.join(movie_base_dir,
-                    self.movie['_meta_']['user']['movie_path']))
+                    self.movie['_meta_'][self.user]['movie_path']))
 
 
     def _toggle_extended_options(self, enabled):
