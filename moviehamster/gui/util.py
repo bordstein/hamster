@@ -19,6 +19,9 @@
 ##
 #############################################################################
 
+import platform
+from subprocess import Popen
+
 
 def humanize_mins(minutes):
     minutes = int(minutes)
@@ -28,3 +31,16 @@ def humanize_mins(minutes):
         return "%02d:%02d" % (hours, minutes)
     return "%02d" % minutes
 
+def os_open_file(full_file_path):
+    os_type = platform.system()
+    if os_type == 'Linux':
+        cmd = 'xdg-open'
+    elif os_type == 'Windows':
+        cmd = 'start'
+    elif os_type == 'Darwin':
+        cmd = 'open'
+    if cmd:
+        print "opening %s with %s" % (full_file_path, cmd)
+        Popen([cmd, full_file_path])
+        return
+    print "no suitible command to open file on system found"
