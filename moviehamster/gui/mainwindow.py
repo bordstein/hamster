@@ -27,7 +27,7 @@ from PySide import QtGui
 import os
 from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray, QPropertyAnimation, QEasingCurve, QAbstractAnimation
 from moviehamster.gui.linkbutton import LinkButton
-from moviehamster.gui.util import humanize_mins
+from moviehamster.gui.util import humanize_mins, os_open_file
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QShortcut, QKeySequence, QListWidgetItem
 from moviehamster.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
@@ -121,6 +121,7 @@ class GUI(QtGui.QMainWindow):
 
     def _open_movie(self, imdb_id, nohist=False):
         movie = self.db.get_movie(imdb_id)
+        self.movie = movie
         plot_short = movie.get('plot outline', "")
         plot = movie.get('plot', [""])[0]
         genres = movie.get('genres', [""])
@@ -208,6 +209,13 @@ class GUI(QtGui.QMainWindow):
         self.ui.stackedWidget.setCurrentWidget(self.ui.movie_view)
         if not nohist:
             self.history.create_entry(imdb_id)
+
+        # enable/disable play button
+        movie_base_dir = self.settings.value("movie_dir")
+        movie_ok = os.path.exists(
+                os.path.join(movie_base_dir,
+                    self.movie['_meta_'][self.user]['movie_path']))
+        self.ui.btn_play.setEnabled(movie_ok)
 
     def _open_person(self, person_id=None, nohist=False):
         if not person_id:
@@ -308,6 +316,15 @@ class GUI(QtGui.QMainWindow):
         self.ui.btn_library.clicked.connect(self._open_library)
 
         self._open_library()
+
+        self.ui.btn_play.clicked.connect(self._play_movie)
+
+    def _play_movie(self):
+        movie_base_dir = self.settings.value("movie_dir")
+        os_open_file(
+                os.path.join(movie_base_dir,
+                    self.movie['_meta_'][self.user]['movie_path']))
+
 
     def _toggle_extended_options(self, enabled):
         geometry = self.ui.widget_extended_options.size()
