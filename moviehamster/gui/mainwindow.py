@@ -1,23 +1,23 @@
 #############################################################################
 ##  Hamster - Nice and friendly movie collection manager
 ##  Copyright (C) 2012 Christoph Meinhart, Michael Seiwald
-##  
+##
 ##  This file is part of Hamster.
-##  
+##
 ##  Hamster is free software; you can redistribute it and/or modify
 ##  it under the terms of the GNU General Public License as published by
 ##  the Free Software Foundation; either version 2 of the License, or
 ##  (at your option) any later version.
-##  
+##
 ##  This program is distributed in the hope that it will be useful,
 ##  but WITHOUT ANY WARRANTY; without even the implied warranty of
 ##  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ##  GNU General Public License for more details.
-##  
+##
 ##  You should have received a copy of the GNU General Public License along
 ##  with this program; if not, write to the Free Software Foundation, Inc.,
 ##  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-## 
+##
 #############################################################################
 
 
@@ -25,7 +25,7 @@
 
 from PySide import QtGui
 import os
-from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray, QPropertyAnimation, QRect, QEasingCurve, QAbstractAnimation
+from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray, QPropertyAnimation, QEasingCurve, QAbstractAnimation
 from moviehamster.gui.linkbutton import LinkButton
 from moviehamster.gui.util import humanize_mins
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QShortcut, QKeySequence, QListWidgetItem
@@ -37,6 +37,7 @@ from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
 from hamsterdelegate import HamsterDelegate
 import getpass
+from settings import Ui_SettingsDialog
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -47,8 +48,10 @@ font-size:36pt; font-weight:600;">%s</span></p>
 margin-right:0px; -qt-block-indent:0; text-indent:0px;">%s</p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">votes</p>"""
 
+
 class GUI(QtGui.QMainWindow):
     shutmedown = Signal()
+
     def _init_config(self):
         QCoreApplication.setOrganizationName("Hamster Inc.")
         QCoreApplication.setApplicationName("Hamster")
@@ -65,9 +68,13 @@ class GUI(QtGui.QMainWindow):
         self.db = HamsterDB(self.user, self.index_path, self.db_path)
         #TODO ask username from user?
 
+    def open_settings(self):
+        diag = Ui_SettingsDialog()
+        diag.show()
+
     def _init_shortcuts(self):
-        shortcut = QShortcut(QKeySequence(self.tr("Alt+Left")), self, self.history.backward)
-        shortcut = QShortcut(QKeySequence(self.tr("Alt+Right")), self, self.history.forward)
+        QShortcut(QKeySequence(self.tr("Alt+Left")), self, self.history.backward)
+        QShortcut(QKeySequence(self.tr("Alt+Right")), self, self.history.forward)
 
     def _init_movie_list_buttons(self):
         self.db.lists._current_movie = None
@@ -100,12 +107,12 @@ class GUI(QtGui.QMainWindow):
         elif col == MOVIELIST_COL_FAVOURITE:
             current_state = self.model.data(idx, Qt.DisplayRole)
             L.d("clicked on favorite, state is %s" % current_state)
-            self.db.lists.toggle_movie_in_list(not current_state, imdb_id, 
+            self.db.lists.toggle_movie_in_list(not current_state, imdb_id,
                     NAME_USER_LIST_FAVOURITES)
         elif col == MOVIELIST_COL_WATCHLATER:
             current_state = self.model.data(idx, Qt.DisplayRole)
             L.d("clicked on watchlater, state is %s" % current_state)
-            self.db.lists.toggle_movie_in_list(not current_state, imdb_id, 
+            self.db.lists.toggle_movie_in_list(not current_state, imdb_id,
                     NAME_USER_LIST_WATCHLATER)
         else:
             pass
@@ -131,13 +138,13 @@ class GUI(QtGui.QMainWindow):
         else:
             final_runtime = humanize_mins(runtime)
         if not final_runtime:
-            final_runtime = movie.get('runtimes', ["Not available"])[0] # reload
+            final_runtime = movie.get('runtimes', ["Not available"])[0]  # reload
             L.w("could not humanize " + runtime + " for " + str(imdb_id))
         imdb_rating = str(movie.get('rating', "-"))
         votes = movie.get('votes', "-")
         rating = RICHTEXT_RATING % (imdb_rating, votes)
         title = movie['long imdb title']
-        title = '<span style=" font-size:16pt; font-weight:600;"> '+ title + '</span>'
+        title = '<span style=" font-size:16pt; font-weight:600;"> ' + title + '</span>'
 
         self.ui.l_length.setText(final_runtime)
         self.ui.l_genres.setText(', '.join(genres))
@@ -145,7 +152,7 @@ class GUI(QtGui.QMainWindow):
 
         self.ui.box_director.clear()
         last = len(movie['director']) - 1
-        for idx,director in enumerate(movie['director']):
+        for idx, director in enumerate(movie['director']):
             director_button = LinkButton(director['name'])
             director_button.clicked.connect(self._open_person)
             director_button.id = director['person_id']
@@ -159,7 +166,7 @@ class GUI(QtGui.QMainWindow):
 
         self.ui.box_cast.clear()
         last = len(movie['cast']) - 1
-        for idx,actor in enumerate(movie['cast']):
+        for idx, actor in enumerate(movie['cast']):
             actor_button = LinkButton(actor['name'])
             actor_button.clicked.connect(self._open_person)
             actor_button.id = actor['person_id']
@@ -185,7 +192,7 @@ class GUI(QtGui.QMainWindow):
             self.ui.l_img.setText("-")
 
         # set toggle list buttons
-        self.db.lists._current_movie = None # avoid firing signals on setting buttons
+        self.db.lists._current_movie = None  # avoid firing signals on setting buttons
         favourites = self.db.lists.get_favourites()
         movie_is_favourite = imdb_id in favourites
         self.ui.button_movie_favourite.setChecked(movie_is_favourite)
@@ -206,7 +213,7 @@ class GUI(QtGui.QMainWindow):
         if not person_id:
             person_id = self.sender().id
         p = self.db.get_person('person_' + person_id)
-        name = '<span style=" font-size:16pt; font-weight:600;"> '+ p['name'] + '</span>'
+        name = '<span style=" font-size:16pt; font-weight:600;"> ' + p['name'] + '</span>'
         self.ui.l_person_name.setText(name)
         self.ui.person_bio.setText(p['mini biography'])
         self.ui.stackedWidget.setCurrentWidget(self.ui.person_view)
@@ -263,7 +270,6 @@ class GUI(QtGui.QMainWindow):
             refresh_icon.addPixmap(QtGui.QPixmap(":/icons/icons/view-refresh.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.ui.button_sync.setIcon(refresh_icon)
 
-
     def closeEvent(self, event):
         L.d("shutdown requested")
         L.d("hiding window")
@@ -282,6 +288,7 @@ class GUI(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.history = History(self)
+        self.open_settings()
 
         self._init_config()
         self._init_db()
@@ -320,6 +327,7 @@ class GUI(QtGui.QMainWindow):
         self.animation.setEndValue(maxHeight)
         self.animation.setEasingCurve(QEasingCurve.OutQuad)
         self.animation.start(QAbstractAnimation.DeleteWhenStopped)
+
 
 class History(object):
     current = -1
@@ -366,4 +374,3 @@ class History(object):
     def overwrite_entry(self):
         print 'called'
         self.create_entry(overwrite=True)
-
