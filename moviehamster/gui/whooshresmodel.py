@@ -20,70 +20,15 @@
 ## 
 #############################################################################
 
-from PySide.QtCore import QAbstractTableModel, Qt
-from moviehamster.constants import *
-import moviehamster.log as L
+from resmodel import GenericListModel
  
-class ResultViewModel(QAbstractTableModel): 
+class ResultViewModel(GenericListModel): 
     def __init__(self, results, liststore, parent=None, *args):
-        QAbstractTableModel.__init__(self, parent, *args)
-        self.headerdata = ['Title', 'Year', 'Rating', 'Favorite', 'Watch Later']
+        GenericListModel.__init__(self,results, liststore, parent)
         self.results = results
-        self.lists = liststore
-        #self.bookmark_list = self.lists.get_user_list("bookmark", failsave=True)
-        #self.favourite_list = self.lists.get_user_list("favourite", failsave=True)
-        #print self.bookmark_list
-        #print self.favourite_list
  
-    def rowCount(self, parent): 
-        if self.results:
-            return len(self.results)
-        return 0
- 
-    def columnCount(self, parent): 
-        return len(self.headerdata)
-
-    def setResults(self, results):
-        self.beginResetModel()
-        self.results = results
-        self.endResetModel()
-
     def getIdForRow(self, row):
         return self.results[row]["imdb_id"]
 
-    def data(self, index, role): 
-        if not index.isValid(): 
-            return None
-        elif role != Qt.DisplayRole: 
-            return None
-        elif self.results:
-            if index.column() == MOVIELIST_COL_TITLE:
-                return self.results[index.row()]["title"]
-            elif index.column() == MOVIELIST_COL_YEAR:
-                return self.results[index.row()]["year"]
-            elif index.column() == MOVIELIST_COL_RATING:
-                return str(self.results[index.row()]["rating"])
-            elif index.column() == MOVIELIST_COL_FAVOURITE:
-                imdb_id = self.results[index.row()]['imdb_id']
-                favourites = self.lists.get_favourites()
-                if favourites == None:
-                    L.e('Could not load favourites')
-                    return False
-                if imdb_id in favourites:
-                    return True
-                return False
-            elif index.column() == MOVIELIST_COL_WATCHLATER:
-                imdb_id = self.results[index.row()]['imdb_id']
-                watchlater = self.lists.get_watchlater()
-                if watchlater == None:
-                    L.e('Could not load watchlater')
-                    return False
-                if imdb_id in watchlater:
-                    return True
-                return False
-        return None
-
-    def headerData(self, col, orientation, role):
-        if orientation == Qt.Horizontal and role == Qt.DisplayRole:
-            return self.headerdata[col]
-        return None
+    def getData(self, row, key):
+        return self.results[row][key]
