@@ -32,7 +32,7 @@ import os
 from PySide.QtCore import QRunnable, QObject, QThreadPool, QDirIterator, Signal, QThread, Qt, QTimer
 from PySide.QtGui import QApplication
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
-from downloader import DownloadManager
+from moviehamster.downloader import DownloadManager
 import moviehamster.log as L
 import signal
 
