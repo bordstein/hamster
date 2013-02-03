@@ -29,7 +29,7 @@ from PySide.QtCore import Signal, Qt, QCoreApplication, QSettings, QByteArray, Q
 from moviehamster.gui.linkbutton import LinkButton
 from moviehamster.gui.util import humanize_mins, os_open_file
 from PySide.QtGui import QDesktopServices, QAbstractItemView, QShortcut, QKeySequence, QListWidgetItem
-from moviehamster.indexer import IndexThread
+from moviehamster.indexer.indexer import IndexThread
 from moviehamster.hamsterdb.hamsterdb import HamsterDB
 import moviehamster.log as L
 from moviehamster.constants import *
@@ -37,7 +37,7 @@ from qtgui import Ui_MainWindow
 from whooshresmodel import ResultViewModel
 from hamsterdelegate import HamsterDelegate
 import getpass
-from settings import Ui_SettingsDialog
+# from settings import Ui_SettingsDialog
 
 RICHTEXT_RATING = """<p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">imdb</span></p>
 <p align="center" style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-size:18pt;">rating</span></p>
@@ -69,8 +69,9 @@ class GUI(QtGui.QMainWindow):
         #TODO ask username from user?
 
     def open_settings(self):
-        diag = Ui_SettingsDialog()
-        diag.show()
+        #diag = Ui_SettingsDialog()
+        #diag.show()
+        pass
 
     def _init_shortcuts(self):
         QShortcut(QKeySequence(self.tr("Alt+Left")), self, self.history.backward)
