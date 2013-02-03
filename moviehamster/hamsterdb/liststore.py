@@ -12,9 +12,9 @@ class ListStore(QObject):
     def _create_index(self):
         indexes = self.db.list_indexes()
         if "by-name" not in [idx[0] for idx in indexes]:
-            self.db.create_index("by-name", ['name'])
+            self.db.create_index("by-name", 'name')
         if "userlists-by-name" not in [idx[0] for idx in indexes]:
-            self.db.create_index("userlists-by-name", ['user', 'name'])
+            self.db.create_index("userlists-by-name", 'user', 'name')
 
     def list_user_lists(self):
         results = self.db.get_from_index(
